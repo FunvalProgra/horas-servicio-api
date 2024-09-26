@@ -13,6 +13,7 @@ import {
  * @param {*} next
  */
 async function all(req, res, next) {
+      // #swagger.tags = ['Categories']
   const categories = await allCategories();
   res.json(categories);
 }
@@ -24,6 +25,7 @@ async function all(req, res, next) {
  * @param {*} next
  */
 async function create(req, res, next) {
+  // #swagger.tags = ['Categories']
   const { name, description } = req.body;
   const newCategory = await createCategory(name, description);
   res.json({ category: newCategory });
@@ -35,7 +37,9 @@ async function create(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
+ 
 async function show(req, res, next) {
+  // #swagger.tags = ['Categories']
   const { id } = req.params;
   const category = await getCategoryById(id);
   res.json(category);
@@ -44,10 +48,11 @@ async function show(req, res, next) {
 /**
  * @description update a category
  * @param {*} req
- * @param {*} res
+ * @param {*} res.
  * @param {*} next
  */
 async function update(req, res, next) {
+   // #swagger.tags = ['Categories']
   const { id } = req.params;
   const { name, description } = req.body;
   const updated = await updateCategory(id, name, description);
@@ -59,7 +64,9 @@ async function update(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
+      
 async function remove(req, res, next) {
+  // #swagger.tags = ['Categories']
   const { id } = req.params;
   const deleted = await removeCategory(id);
   res.json(`Category with id ${req.params.id} deleted`);

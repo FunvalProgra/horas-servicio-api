@@ -13,6 +13,7 @@ import {
  * @param {*} next
  */
 async function all(req, res, next) {
+    // #swagger.tags = ['Services']
   const services = await allServices();
   res.json(services);
 }
@@ -24,6 +25,7 @@ async function all(req, res, next) {
  * @param {*} next
  */
 async function create(req, res, next) {
+    // #swagger.tags = ['Services']
   const {
     amountReported,
     evidence,
@@ -49,6 +51,7 @@ async function create(req, res, next) {
  * @param {*} next
  */
 async function show(req, res, next) {
+    // #swagger.tags = ['Services']
   const { id } = req.params;
   const service = await getServiceById(id);
   res.json(service);
@@ -60,7 +63,10 @@ async function show(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
+
 async function update(req, res, next) {
+    // #swagger.tags = ['Services']
+    res.json(`Service with id ${req.params.id} updated`);
   const { id } = req.params;
   const {
     amountReported,
@@ -88,7 +94,9 @@ async function update(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
+
 async function remove(req, res, next) {
+    // #swagger.tags = ['Services']
   const { id } = req.params;
   const deleted = await removeService(id);
   res.json(`Service with id ${req.params.id} deleted`);

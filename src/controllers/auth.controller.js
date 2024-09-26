@@ -2,6 +2,7 @@ import { getUserByEmail } from "../models/auth.model.js";
 import { SECRRET_KEY } from "../config/app.config.js";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
+
 /**
   *@description user login
     * @param {*} req
@@ -9,7 +10,8 @@ import { compare } from "bcrypt";
     * @param {*} next
     * 
  */
-async function login(req, res, next) {
+ async function login(req, res, next) {
+   // #swagger.tags = ['Auth']
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
   try {
@@ -39,7 +41,8 @@ async function login(req, res, next) {
     * 
  */
 function logout(req, res, next) {
-  res.json("Logout");
+    // #swagger.tags = ['Auth']
+    res.json("Logout");
 }
 
 /**
@@ -50,7 +53,8 @@ function logout(req, res, next) {
     * 
  */
 function register(req, res, next) {
-  res.json("Register");
+    // #swagger.tags = ['Auth']
+    res.json("Register");
 }
 
 

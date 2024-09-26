@@ -13,6 +13,7 @@ import {
  * @param {*} next
  */
 async function all(req, res, next) {
+    // #swagger.tags = ['Users']
   const users = await allUsers();
   res.json(users);
 }
@@ -24,6 +25,7 @@ async function all(req, res, next) {
  * @param {*} next
  */
 async function create(req, res, next) {
+    // #swagger.tags = ['Users']
   const { email, registrationCode, password, roleId } = req.body;
   const newUser = await createUser(email, registrationCode, password, roleId);
   res.json({
@@ -38,9 +40,9 @@ async function create(req, res, next) {
  * @param {*} next
  */
 async function show(req, res, next) {
+    // #swagger.tags = ['Users']
   const { id } = req.params;
   const user = await getUserById(id);
-
   res.json(user);
 }
 
@@ -51,6 +53,7 @@ async function show(req, res, next) {
  * @param {*} next
  */
 async function update(req, res, next) {
+    // #swagger.tags = ['Users']
   const { id } = req.params;
   const { email, registrationCode, password, roleId } = req.body;
   const updated = await updateUser(
@@ -70,6 +73,7 @@ async function update(req, res, next) {
  * @param {*} next
  */
 async function remove(req, res, next) {
+    // #swagger.tags = ['Users']
   const { id } = req.params;
   const deleted = await removeUser(id);
   res.json(`User with id ${req.params.id} deleted`);
