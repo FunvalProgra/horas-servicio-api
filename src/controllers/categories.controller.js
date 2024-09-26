@@ -7,6 +7,7 @@
  * @param {*} next 
  */
 function all(req, res, next) {
+      // #swagger.tags = ['Categories']
     res.json("All categories");
 }
 
@@ -17,6 +18,7 @@ function all(req, res, next) {
  * @param {*} next 
  */
 function create(req, res, next) {
+      // #swagger.tags = ['Categories']
     res.json("Category created");
 }
 
@@ -27,6 +29,7 @@ function create(req, res, next) {
  * @param {*} next 
  */
 function show(req, res, next) {
+      // #swagger.tags = ['Categories']
     res.json(`Category with id ${req.params.id}`);
 }
 
@@ -37,6 +40,7 @@ function show(req, res, next) {
  * @param {*} next 
  */
 function update(req, res, next) {
+      // #swagger.tags = ['Categories']
     res.json(`Category with id ${req.params.id} updated`);
 }
 
@@ -47,6 +51,7 @@ function update(req, res, next) {
  * @param {*} next 
  */
 function remove(req, res, next) {
+      // #swagger.tags = ['Categories']
     res.json(`Category with id ${req.params.id} deleted`);
 }
 

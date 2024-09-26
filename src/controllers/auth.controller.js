@@ -10,6 +10,7 @@
     * 
  */
 function login(req, res, next) {
+  // #swagger.tags = ['Auth']
     res.json("Login");    
 }
 
@@ -21,6 +22,7 @@ function login(req, res, next) {
     * 
  */
 function logout(req, res, next) {
+    // #swagger.tags = ['Auth']
     res.json("Logout");
 }
 
@@ -32,6 +34,7 @@ function logout(req, res, next) {
     * 
  */
 function register(req, res, next) {
+    // #swagger.tags = ['Auth']
     res.json("Register");
 }
  

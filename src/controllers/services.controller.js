@@ -6,6 +6,7 @@
  * @param {*} next 
  */
 function all(req, res, next) {
+    // #swagger.tags = ['Services']
     res.json("All services");
 }
 
@@ -16,6 +17,7 @@ function all(req, res, next) {
  * @param {*} next 
  */
 function create(req, res, next) {
+    // #swagger.tags = ['Services']
     res.json("Service created");
 }
 
@@ -26,6 +28,7 @@ function create(req, res, next) {
  * @param {*} next 
  */
 function show(req, res, next) {
+    // #swagger.tags = ['Services']
     res.json(`Service with id ${req.params.id}`);
 }
 
@@ -36,6 +39,7 @@ function show(req, res, next) {
  * @param {*} next 
  */
 function update(req, res, next) {
+    // #swagger.tags = ['Services']
     res.json(`Service with id ${req.params.id} updated`);
 }
 
@@ -46,6 +50,7 @@ function update(req, res, next) {
  * @param {*} next 
  */
 function remove(req, res, next) {
+    // #swagger.tags = ['Services']
     res.json(`Service with id ${req.params.id} deleted`);
 }
 
