@@ -1,6 +1,6 @@
 import {
   allRoles,
-  getRoleById,
+  getRolById,
   createRole,
   updateRole,
   removeRole,
@@ -37,7 +37,7 @@ async function create(req, res, next) {
  */
 async function show(req, res, next) {
   const { id } = req.params;
-  const role = await getRoleById(id);
+  const role = await getRolById(id);
   res.json(role);
 }
 
