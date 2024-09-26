@@ -1,52 +1,78 @@
+import {
+  allUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  removeUser,
+} from "../models/user.model.js";
 
 /**
  * @description get all users
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function all(req, res, next) {
-    res.json("All users");
+async function all(req, res, next) {
+  const users = await allUsers();
+  res.json(users);
 }
 
 /**
  * @description create a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function create(req, res, next) {
-    res.json("User created");
+async function create(req, res, next) {
+  const { email, registrationCode, password, roleId } = req.body;
+  const newUser = await createUser(email, registrationCode, password, roleId);
+  res.json({
+    user: newUser,
+  });
 }
 
 /**
  * @description get a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function show(req, res, next) {
-    res.json(`User with id ${req.params.id}`);
+async function show(req, res, next) {
+  const { id } = req.params;
+  const user = await getUserById(id);
+
+  res.json(user);
 }
 
 /**
  * @description update a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function update(req, res, next) {
-    res.json(`User with id ${req.params.id} updated`);
+async function update(req, res, next) {
+  const { id } = req.params;
+  const { email, registrationCode, password, roleId } = req.body;
+  const updated = await updateUser(
+    id,
+    email,
+    registrationCode,
+    password,
+    roleId
+  );
+  res.json(`User with id ${req.params.id} updated`);
 }
 
 /**
  * @description delete a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function remove(req, res, next) {
-    res.json(`User with id ${req.params.id} deleted`);
+async function remove(req, res, next) {
+  const { id } = req.params;
+  const deleted = await removeUser(id);
+  res.json(`User with id ${req.params.id} deleted`);
 }
 
 export { all, create, show, update, remove };
