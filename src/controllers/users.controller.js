@@ -1,57 +1,82 @@
+import {
+  allUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  removeUser,
+} from "../models/user.model.js";
 
 /**
  * @description get all users
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function all(req, res, next) {
+async function all(req, res, next) {
     // #swagger.tags = ['Users']
-    res.json("All users");
+  const users = await allUsers();
+  res.json(users);
 }
 
 /**
  * @description create a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function create(req, res, next) {
+async function create(req, res, next) {
     // #swagger.tags = ['Users']
-    res.json("User created");
+  const { email, registrationCode, password, roleId } = req.body;
+  const newUser = await createUser(email, registrationCode, password, roleId);
+  res.json({
+    user: newUser,
+  });
 }
 
 /**
  * @description get a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function show(req, res, next) {
+async function show(req, res, next) {
     // #swagger.tags = ['Users']
-    res.json(`User with id ${req.params.id}`);
+  const { id } = req.params;
+  const user = await getUserById(id);
+  res.json(user);
 }
 
 /**
  * @description update a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function update(req, res, next) {
+async function update(req, res, next) {
     // #swagger.tags = ['Users']
-    res.json(`User with id ${req.params.id} updated`);
+  const { id } = req.params;
+  const { email, registrationCode, password, roleId } = req.body;
+  const updated = await updateUser(
+    id,
+    email,
+    registrationCode,
+    password,
+    roleId
+  );
+  res.json(`User with id ${req.params.id} updated`);
 }
 
 /**
  * @description delete a user
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function remove(req, res, next) {
+async function remove(req, res, next) {
     // #swagger.tags = ['Users']
-    res.json(`User with id ${req.params.id} deleted`);
+  const { id } = req.params;
+  const deleted = await removeUser(id);
+  res.json(`User with id ${req.params.id} deleted`);
 }
 
 export { all, create, show, update, remove };

@@ -1,59 +1,75 @@
-
+import {
+  allCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory,
+  removeCategory,
+} from "../models/category.model.js";
 
 /**
  * @description get all categories
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function all(req, res, next) {
+async function all(req, res, next) {
       // #swagger.tags = ['Categories']
-    res.json("All categories");
+  const categories = await allCategories();
+  res.json(categories);
 }
 
 /**
  * @description create a category
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function create(req, res, next) {
-      // #swagger.tags = ['Categories']
-    res.json("Category created");
+async function create(req, res, next) {
+  // #swagger.tags = ['Categories']
+  const { name, description } = req.body;
+  const newCategory = await createCategory(name, description);
+  res.json({ category: newCategory });
 }
 
 /**
  * @description get a category
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function show(req, res, next) {
-      // #swagger.tags = ['Categories']
-    res.json(`Category with id ${req.params.id}`);
+ 
+async function show(req, res, next) {
+  // #swagger.tags = ['Categories']
+  const { id } = req.params;
+  const category = await getCategoryById(id);
+  res.json(category);
 }
 
 /**
  * @description update a category
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res.
+ * @param {*} next
  */
-function update(req, res, next) {
-      // #swagger.tags = ['Categories']
-    res.json(`Category with id ${req.params.id} updated`);
+async function update(req, res, next) {
+   // #swagger.tags = ['Categories']
+  const { id } = req.params;
+  const { name, description } = req.body;
+  const updated = await updateCategory(id, name, description);
+  res.json(`Category with id ${req.params.id} updated`);
 }
-
 /**
  * @description delete a category
- * @param {*} req  
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-function remove(req, res, next) {
-      // #swagger.tags = ['Categories']
-    res.json(`Category with id ${req.params.id} deleted`);
+      
+async function remove(req, res, next) {
+  // #swagger.tags = ['Categories']
+  const { id } = req.params;
+  const deleted = await removeCategory(id);
+  res.json(`Category with id ${req.params.id} deleted`);
 }
-
 
 export { all, create, show, update, remove };
