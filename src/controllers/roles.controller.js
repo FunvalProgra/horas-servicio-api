@@ -13,8 +13,8 @@ import {
  * @param {*} next
  */
 
-function all(req, res, next) {
-    // #swagger.tags = ['Roles']
+async function all(req, res, next) {
+  // #swagger.tags = ['Roles']
   const roles = await allRoles();
   res.json(roles);
 }
@@ -27,8 +27,8 @@ function all(req, res, next) {
  */
 
 async function create(req, res, next) {
-    // #swagger.tags = ['Roles']
-    res.json("Role created");
+  // #swagger.tags = ['Roles']
+  res.json("Role created");
   const { name } = req.body;
   const newRole = await createRole(name);
   res.json({ role: newRole });
@@ -41,7 +41,7 @@ async function create(req, res, next) {
  * @param {*} next
  */
 async function show(req, res, next) {
-    // #swagger.tags = ['Roles']
+  // #swagger.tags = ['Roles']
   const { id } = req.params;
   const role = await getRolById(id);
   res.json(role);
@@ -53,14 +53,13 @@ async function show(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
- 
+
 async function update(req, res, next) {
-    // #swagger.tags = ['Roles']
+  // #swagger.tags = ['Roles']
   const { id } = req.params;
   const { name } = req.body;
   const updated = await updateRole(id, name);
   res.json(`Role with id ${req.params.id} updated`);
- 
 }
 
 /**
@@ -70,7 +69,7 @@ async function update(req, res, next) {
  * @param {*} next
  */
 async function remove(req, res, next) {
-    // #swagger.tags = ['Roles']
+  // #swagger.tags = ['Roles']
   const { id } = req.params;
   const deleted = await removeRole(id);
   res.json(`Role with id ${req.params.id} deleted`);
