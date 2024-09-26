@@ -18,7 +18,7 @@ export default (req, res, next) => {
             return res.status(401).json({ message: 'Token invalid' });
         }
 
-        req.userId = decoded.id;
+        req.auth = decoded;
         return next();
     });
 

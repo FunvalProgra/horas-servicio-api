@@ -8,9 +8,15 @@ import { pool } from '../libs/pool.js'
  */
 export async function getUserByEmail(email) {
     try {
-        const query = 'SELECT * FROM users WHERE email = ?';
+
+        const query = `
+            SELECT u.id, u.email, u.password, r.id as role_id, r.name as role 
+            FROM users u
+            JOIN roles r on r.id = u.roles_id
+            WHERE u.email = ?
+        `;
         const values = [email];
-        const  [rows]  = await pool.query(query, values);
+        const [[rows]] = await pool.query(query, values);
         return rows;
     } catch (error) {
         throw error;
@@ -24,10 +30,15 @@ export async function getUserByEmail(email) {
  */
 export async function getUserById(id) {
     try {
-        const query = 'SELECT * FROM users WHERE id = $1';
+        const query = `
+            SELECT u.id, u.email,  u.password, r.id as role_id, r.name as _role 
+            FROM users u
+            JOIN roles r on r.id = u.roles_id
+            WHERE u.id = ?
+        `;
         const values = [id];
-        const { rows } = await pool.query(query, values);
-        return rows[0];
+        const [[row]] = await pool.query(query, values);
+        return row;
     } catch (error) {
         throw error;
     }

@@ -10,21 +10,32 @@ import { compare } from "bcrypt";
     * @param {*} next
     * 
  */
- async function login(req, res, next) {
-   // #swagger.tags = ['Auth']
+async function login(req, res, next) {
+  // #swagger.tags = ['Auth']
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
+  console.log(user);
   try {
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw { message: "User not found", status: 404 };
     }
+
     const validPassword = await compare(password, user.password);
     if (!validPassword) {
-      return res.status(401).json({ message: "Invalid password" });
+      throw { message: "Invalid password", status: 401 };
     }
-    const token = jwt.sign({ id: user.id }, SECRRET_KEY, {
-      expiresIn: "2h",
+
+    const payload = {
+      id: user.id,
+      role: {
+        id: user.role_id,
+        name: user.role
+      }
+    };
+    const token = jwt.sign(payload, SECRRET_KEY, {
+      expiresIn: "24h",
     });
+
     return res.status(200).json({ token });
 
   } catch (error) {
@@ -41,8 +52,8 @@ import { compare } from "bcrypt";
     * 
  */
 function logout(req, res, next) {
-    // #swagger.tags = ['Auth']
-    res.json("Logout");
+  // #swagger.tags = ['Auth']
+  res.json("Logout");
 }
 
 /**
@@ -53,8 +64,8 @@ function logout(req, res, next) {
     * 
  */
 function register(req, res, next) {
-    // #swagger.tags = ['Auth']
-    res.json("Register");
+  // #swagger.tags = ['Auth']
+  res.json("Register");
 }
 
 
