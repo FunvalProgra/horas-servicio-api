@@ -16,18 +16,14 @@ async function getUserById(id) {
 }
 
 async function createUser(email, registrationCode, password, roleId) {
-  const [res] = await pool.execute(
-    "INSERT INTO users (email, registration_code, password, roles_id) VALUES (?, ?, ?, ?)",
-    [email, registrationCode, password, roleId]
-  );
-  return { id: res.insertId, email, registrationCode, password, roleId };
+  const query = "INSERT INTO users (email, registration_code, password, roles_id) VALUES (?, ?, ?, ?)";
+  const [res] = await pool.execute(query, [email, registrationCode, password, roleId]);
+  return res.insertId;
 }
 
 async function updateUser(id, email, registrationCode, password, roleId) {
-  const [res] = await pool.execute(
-    "UPDATE users SET email = ?, registration_code = ?, password = ?, roles_id = ? WHERE id = ?",
-    [email, registrationCode, password, roleId, id]
-  );
+  const query = "UPDATE users SET email = ?, registration_code = ?, password = ?, roles_id = ? WHERe id = ?";
+  const [res] = await pool.execute(query, [email, registrationCode, password, roleId, id]);
   return res;
 }
 async function removeUser(id) {
