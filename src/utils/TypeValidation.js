@@ -1,3 +1,10 @@
+/**
+ * @description Validates the request body
+ * @param {Object} body - The request body
+ * @param {Object} rules - The rules to validate
+ * @returns {void}
+ */
+
 export default (body, rules) => {
     const errors = [];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,8 +21,8 @@ export default (body, rules) => {
 
             options[rule](field, rule);
         }
-        if (errors.length > 0) {
-            throw { message: errors.join(", "), status: 400 };
-        }
+    }
+    if (errors.length > 0) {
+        throw { message: errors.join(", "), status: 400 };
     }
 }
