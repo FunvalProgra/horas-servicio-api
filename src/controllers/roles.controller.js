@@ -5,6 +5,7 @@ import {
   updateRole,
   removeRole,
 } from "../models/rol.model.js";
+import DataTypeValidation from "../utils/TypeValidation.js";
 
 /**
  * @description get all roles
@@ -12,11 +13,14 @@ import {
  * @param {*} res
  * @param {*} next
  */
-
 async function all(req, res, next) {
   // #swagger.tags = ['Roles']
-  const roles = await allRoles();
-  res.json(roles);
+  try {
+    const roles = await allRoles();
+    res.json(roles);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -25,13 +29,22 @@ async function all(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
-
 async function create(req, res, next) {
   // #swagger.tags = ['Roles']
-  res.json("Role created");
-  const { name } = req.body;
-  const newRole = await createRole(name);
-  res.json({ role: newRole });
+  try {
+    const rule = {
+      name: { type: "string", required: true },
+    };
+
+    DataTypeValidation(req.body, rule);
+
+    const { name } = req.body;
+    await createRole(name);
+
+    res.status(201).json({ message: `Role ${name} created successfully` });
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -58,8 +71,12 @@ async function update(req, res, next) {
   // #swagger.tags = ['Roles']
   const { id } = req.params;
   const { name } = req.body;
-  const updated = await updateRole(id, name);
-  res.json(`Role with id ${req.params.id} updated`);
+  const rules = {
+    name: { type: "string", required: true },
+  };
+  DataTypeValidation(req.body, rules);
+  await updateRole(id, name);
+  res.status(202).json({ message: `Role with id ${id} updated successfully` });
 }
 
 /**
@@ -71,8 +88,8 @@ async function update(req, res, next) {
 async function remove(req, res, next) {
   // #swagger.tags = ['Roles']
   const { id } = req.params;
-  const deleted = await removeRole(id);
-  res.json(`Role with id ${req.params.id} deleted`);
+  await removeRole(id);
+  res.status(202).json({ message: `Role with id ${id} deleted successfully` });
 }
 
 export { all, create, show, update, remove };
