@@ -4,49 +4,58 @@ async function allServices() {
   const [res] = await pool.execute("SELECT * FROM services");
   return res;
 }
-async function getServiceById(id) {
-  const [res] = await pool.execute("SELECT * FROM services WHERE id = ?", [id]);
-  if (res.length > 0) {
+
+async function getServicesByUserId(userId) {
+  try {
+    const [res] = await pool.execute("SELECT * FROM services WHERE user_id = ?", [
+      userId,
+    ]);
     return res;
-  } else {
-    return null;
+  } catch (error) {
+    throw (error)
   }
+
+
+};
+
+/**
+ * @description: get a service by id
+ * @param {Number} id 
+ * @returns {Promise:<Object>}
+ */
+async function getServiceById(id) {
+  const [[res]] = await pool.execute("SELECT * FROM services WHERE id = ?", [id]);
+  return res;
+
 }
-async function createService(
-  amountReported,
-  evidence,
-  description,
-  userId,
-  reviewerId,
-  categoryId
-) {
-  const [res] = await pool.execute(
-    "INSERT INTO services (amount_reported, evidence, description, user_id, reviewer_id, categorie_id) VALUES (?, ?, ?, ?, ?, ?)",
-    [amountReported, evidence, description, userId, reviewerId, categoryId]
-  );
-  return {
-    id: res.insertId,
-    amountReported,
-    evidence,
-    description,
-    userId,
-    reviewerId,
-    categoryId,
-  };
+
+/**
+ * @description: create a service
+ * @param {Number} amountReported - the amount reported
+ * @param {String} evidence - the evidence
+ * @param {String} description - the description
+ * @param {Number} userId - the user id
+ * @param {Number} categoryId - the category id
+ * @returns {Promise:<Object>} - the id of the created service
+ */
+async function createService(amountReported, evidence, description, userId, categoryId) {
+  console.log(amountReported, evidence, description, userId, categoryId);
+  const query = "INSERT INTO services (amount_reported, evidence, description, user_id, category_id) VALUES (?, ?, ?, ?, ?)";
+  const [res] = await pool.execute(query, [amountReported, evidence, description, userId, categoryId]);
+  return { id: res.insertId };
 }
-async function updateService(
-  id,
-  amountReported,
-  evidence,
-  description,
-  userId,
-  reviewerId,
-  categoryId
-) {
-  const [res] = await pool.execute(
-    "UPDATE services SET amount_reported = ?, evidence = ?, description = ?, user_id = ?, reviewer_id = ?, categorie_id = ? WHERE id = ?",
-    [amountReported, evidence, description, userId, reviewerId, categoryId, id]
-  );
+
+/**
+ * @description: update a service
+ * @param {Object} values 
+ * @param {Number} id 
+ * @returns {Promise:<Boolean>}
+ */
+async function updateService(values, id) {
+  const fields = Object.keys(values);
+  const sets = fields.map((field) => `${field} = ?`).join(", ");
+  const query = `UPDATE services SET ${sets} WHERE id = ?`;
+  const [res] = await pool.execute(query, [...Object.values(values), id]);
   return res;
 }
 async function removeService(id) {
@@ -56,6 +65,7 @@ async function removeService(id) {
 
 export {
   allServices,
+  getServicesByUserId,
   getServiceById,
   createService,
   updateService,
