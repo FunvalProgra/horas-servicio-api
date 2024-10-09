@@ -1,5 +1,6 @@
-import { serve } from "swagger-ui-express";
 import { allServices, getServiceById, createService, updateService, removeService, getServicesByUserId } from "../models/service.model.js";
+import { downloadFile, uploadFile, deleteFile } from "../libs/google.drive.js";
+import { Buffer } from 'buffer';
 import typeValidation from "../utils/TypeValidation.js";
 /**
  * @description get all services
@@ -33,13 +34,17 @@ async function all(req, res, next) {
  */
 async function create(req, res, next) {
   // #swagger.tags = ['Services']
-
+  let evidence = ""
   try {
-    const { amount_reported, evidence, description, category_id } = req.body;
+    if (!req.file) {
+      throw { status: 400, message: 'evidence is required' }
+    }
+    evidence = await uploadFile('application/pdf', req.file.originalname, req.file.path);
+
+    const { amount_reported, description, category_id } = req.body;
     const { id: user_id } = req.auth;
     const rules = {
       amount_reported: { type: 'number', required: true },
-      evidence: { type: 'string', required: true },
       description: { type: 'string' },
     }
 
@@ -48,10 +53,11 @@ async function create(req, res, next) {
 
     res.status(201).json({ message: 'Service created successfully' });
   } catch (error) {
+    if (evidence) {
+      await deleteFile(evidence);
+    }
     next(error)
   }
-
-
 
 }
 
@@ -170,6 +176,46 @@ async function review(req, res, next) {
   }
 }
 
+/**
+ * @description load service report evidence
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+async function loadEvidence(req, res, next) {
+
+  // #swagger.tags = ['Services']
+
+  try {
+    const { opt } = req.query;
+
+    const { fileId } = req.params;
+    if (!fileId) {
+      throw { status: 400, message: 'File id is required' }
+    }
+
+    const result = await downloadFile(fileId);
+
+    if (!result) {
+      throw { status: 404, message: 'File not found' }
+    }
+
+    const blob = result.data;
+    const buffer = Buffer.from(await blob.arrayBuffer());
+
+    res.setHeader('Content-Type', 'application/pdf');
+    if (opt === 'download') {
+      res.setHeader('Content-Disposition', 'attachment; filename="file.pdf"');
+    } else {
+      res.setHeader('Content-Disposition', 'inline; filename="file.pdf"');
+    }
+
+    res.send(buffer);
+
+  } catch (err) {
+    next(err);
+  }
+}
 
 /**
  * @description delete a service
@@ -184,4 +230,4 @@ async function remove(req, res, next) {
   res.json(`Service with id ${req.params.id} deleted`);
 }
 
-export { all, create, show, update, remove, review };
+export { all, create, show, update, remove, review, loadEvidence };
