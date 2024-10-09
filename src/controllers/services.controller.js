@@ -1,7 +1,10 @@
+import { Buffer } from 'buffer';
+import fs from 'fs';
 import { allServices, getServiceById, createService, updateService, removeService, getServicesByUserId } from "../models/service.model.js";
 import { downloadFile, uploadFile, deleteFile } from "../libs/google.drive.js";
-import { Buffer } from 'buffer';
 import typeValidation from "../utils/TypeValidation.js";
+
+
 /**
  * @description get all services
  * @param {*} req
@@ -44,7 +47,7 @@ async function create(req, res, next) {
     const { amount_reported, description, category_id } = req.body;
     const { id: user_id } = req.auth;
     const rules = {
-      amount_reported: { type: 'number', required: true },
+      amount_reported: { required: true },
       description: { type: 'string' },
     }
 
@@ -57,6 +60,8 @@ async function create(req, res, next) {
       await deleteFile(evidence);
     }
     next(error)
+  } finally {
+    fs.unlinkSync(req.file.path);
   }
 
 }

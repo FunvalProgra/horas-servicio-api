@@ -39,7 +39,6 @@ async function getServiceById(id) {
  * @returns {Promise:<Object>} - the id of the created service
  */
 async function createService(amountReported, evidence, description, userId, categoryId) {
-  console.log(amountReported, evidence, description, userId, categoryId);
   const query = "INSERT INTO services (amount_reported, evidence, description, user_id, category_id) VALUES (?, ?, ?, ?, ?)";
   const [res] = await pool.execute(query, [amountReported, evidence, description, userId, categoryId]);
   return { id: res.insertId };
