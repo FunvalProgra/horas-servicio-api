@@ -1,4 +1,4 @@
-import { allUsers, getUserById, createUser, updateUser, removeUser } from "../models/user.model.js";
+import { allUsers, getUserById, createUser, updateUser, removeUser, addstudent } from "../models/user.model.js";
 import { hash } from "bcrypt";
 import { createData } from "../models/data.model.js"
 import TypeValidation from "../utils/TypeValidation.js";
@@ -23,24 +23,32 @@ async function all(req, res, next) {
 async function create(req, res, next) {
   // #swagger.tags = ['Users']
   try {
-    const rules = {
-      email: { required: true, email: true },
-      registrationCode: { required: true, type: 'string' },
-      password: { required: true, type: 'string' },
-      roleId: { required: true, type: 'number' },
-      f_name: { required: true, type: 'string', },
-      s_name: { required: true, type: 'string', },
-      f_lastname: { required: true, type: 'string' },
-      s_lastname: { required: true, type: 'string' },
+    // const rules = {
+    //   first_name: { required: true, type: 'string' },
+    //   middle_name: { type: 'string' },
+    //   last_name: { required: true, type: 'string' },
+    //   second_last_name: { type: 'string' },
+    //   email: { required: true, email: true },
+    //   registration_code: { required: true, type: 'string' },
+    //   password: { required: true, type: 'string' },
+    //   role_id: { required: true, type: 'number' },
+    //   controller_id: { type: 'number' },
+    //   recruiter_id: { type: 'number' },
+    //   country_id: { type: 'number' },
+    //   school_id: { type: 'number' },
+    // }
+
+    // TypeValidation(req.body, rules);
+
+
+
+    const { first_name, middle_name, last_name, second_last_name, email, registration_code, password, role_id, controller_id, recruiter_id, country_id, school_id } = req.body;
+    if (role_id === 2) {
+      const hashPassword = await hash(password, 10);
+      await createStudent(first_name, middle_name, last_name, second_last_name, email, registration_code, hashPassword, role_id, controller_id, recruiter_id, country_id, school_id);
+      res.status(201).json({ message: 'User created successfully' });
     }
-    const { email, registrationCode, password, roleId, f_name, s_name, f_lastname, s_lastname } = req.body;
-    TypeValidation(req.body, rules);
-    const hashedPassword = await hash(password, 10);
 
-    const user_id = await createUser(email, registrationCode, hashedPassword, roleId);
-    const data_id = await createData(f_name, s_name, f_lastname, s_lastname, user_id);
-
-    res.status(201).json({ message: "user created successfully" });
 
   } catch (error) {
     next(error);
@@ -83,6 +91,7 @@ async function update(req, res, next) {
       password: { required: true, type: 'string' },
       roleId: { required: true, type: 'number' },
     }
+
     TypeValidation(req.body, rules);
 
     const { email, password, roleId } = req.body;
@@ -111,4 +120,13 @@ async function remove(req, res, next) {
   res.json(`User with id ${req.params.id} deleted`);
 }
 
+async function createStudent(first_name, middle_name, last_name, second_last_name, email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id) {
+  try {
+    await addstudent(first_name, middle_name, last_name, second_last_name, email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+
+}
 export { all, create, show, update, remove };

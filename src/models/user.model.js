@@ -32,4 +32,16 @@ async function removeUser(id) {
   return res;
 }
 
-export { allUsers, getUserById, createUser, updateUser, removeUser };
+async function addstudent(first_name, middle_name = "", last_name, second_last_name = "", email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id) {
+  try {
+    const query = "CALL create_new_student(?,?,?,?,?,?,?,?,?,?,?,?)";
+    const [res] = await pool.execute(query, [first_name, middle_name, last_name, second_last_name, email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id]);
+
+    return res;
+    
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { allUsers, getUserById, createUser, updateUser, removeUser, addstudent };
