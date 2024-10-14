@@ -4,10 +4,10 @@ import { all, create, update, remove, show } from "../controllers/roles.controll
 const roles_router = Router();
 
 roles_router.get("/", all);
-roles_router.post("/", create);
+// roles_router.post("/", create);
 roles_router.get("/:id", show);
-roles_router.put("/:id", update);
-roles_router.delete("/:id", remove);
+// roles_router.put("/:id", update);
+// roles_router.delete("/:id", remove);
 
 
 export default roles_router;

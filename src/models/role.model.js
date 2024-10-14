@@ -7,11 +7,11 @@ async function allRoles() {
 }
 
 async function getRolById(id) {
-  const [res] = await pool.execute("SELECT * FROM roles WHERE id=?", [id]);
-  if (res.length > 0) {
+  try {
+    const [[res]] = await pool.execute("SELECT * FROM roles WHERE id=?", [id]);
     return res;
-  } else {
-    return null;
+  } catch (error) {
+    throw error;
   }
 }
 

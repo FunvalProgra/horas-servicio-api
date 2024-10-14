@@ -26,22 +26,48 @@ async function updateUser(id, email, registrationCode, password, roleId) {
   const [res] = await pool.execute(query, [email, registrationCode, password, roleId, id]);
   return res;
 }
-async function removeUser(id) {
-  const [res] = await pool.execute("DELETE FROM users WHERE id = ?", [id]);
 
+async function removeUser(id) {
+  const query = "UPDATE users SET status = 0 WHERE id = ?";
+  const [res] = await pool.execute(query, [id]);
   return res;
 }
 
-async function addstudent(first_name, middle_name = "", last_name, second_last_name = "", email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id) {
+
+/**
+ * @description create a new student
+ * @param {Object} body 
+ * @returns 
+ */
+async function addstudent(body) {
   try {
+    !body.middle_name && (body.middle_name = '');
+    !body.second_last_name && (body.second_last_name = '');
+
+    const values = [
+      body.first_name,
+      body.middle_name,
+      body.last_name,
+      body.second_last_name,
+      body.email,
+      body.registration_code,
+      body.password,
+      body.role_id,
+      body.controller_id,
+      body.recruiter_id,
+      body.country_id,
+      body.school_id
+    ]
+
     const query = "CALL create_new_student(?,?,?,?,?,?,?,?,?,?,?,?)";
-    const [res] = await pool.execute(query, [first_name, middle_name, last_name, second_last_name, email, registration_code, password, role, controller_id, recruiter_id, country_id, school_id]);
+    const [res] = await pool.execute(query, values);
 
     return res;
-    
+
   } catch (error) {
     throw error;
   }
+
 }
 
 export { allUsers, getUserById, createUser, updateUser, removeUser, addstudent };

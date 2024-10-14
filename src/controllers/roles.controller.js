@@ -1,10 +1,4 @@
-import {
-  allRoles,
-  getRolById,
-  createRole,
-  updateRole,
-  removeRole,
-} from "../models/rol.model.js";
+import { allRoles, getRolById, createRole, updateRole, removeRole} from "../models/role.model.js";
 import DataTypeValidation from "../utils/TypeValidation.js";
 
 /**
