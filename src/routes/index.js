@@ -28,7 +28,7 @@ function routes(app) {
     app_router.use("/users", verifyToken, user_router);
     app_router.use("/roles", verifyToken, AccessValidation, roles_router);
     app_router.use("/categories", verifyToken, categories_router);
-    app_router.use("/student", verifyToken ,studen_router);
+    app_router.use("/students", verifyToken ,studen_router);
     app_router.use("/country", verifyToken, country_router);
 
     app_router.use("/docs", documentation_router);

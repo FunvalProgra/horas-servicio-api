@@ -1,7 +1,37 @@
 import { studen_schema } from "../libs/joi/student.schema.js";
+import { allStudents, getStudentById, createStudent } from "../models/student.model.js";
 import { addstudent } from "../models/user.model.js";
 import fs from "fs";
 
+/**
+ * @description get all students
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export async function all(req, res, next) {
+    try {
+        const students = await allStudents();
+        res.status(200).json(students);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function show(req, res, next) {
+    try {
+        const {auth} = req;
+        const { id } = req.params;
+        if(id !== auth.id && auth.role_id !== 1){
+            throw { message: "You don't have permission to access this resource", status: 403 };
+
+        }
+        const student = await getStudentById(id);
+        res.status(200).json(student);
+    } catch (error) {
+        next(error);
+    }
+}
 
 /**
  * @description create a user
@@ -13,17 +43,6 @@ export async function create(req, res, next) {
 
     // #swagger.tags = ['Student']
     // #swagger.description = 'Endpoint para crear un nuevo usuario'
-    // #swagger.parameters['first_name'] = { description: 'Nombre del usuario', type: 'string', required: true }
-    // #swagger.parameters['middle_name'] = { description: 'Segundo nombre del usuario', type: 'string', required: false }
-    // #swagger.parameters['last_name'] = { description: 'Apellido del usuario', type: 'string', required: true }
-    // #swagger.parameters['second_last_name'] = { description: 'Segundo apellido del usuario', type: 'string', required: false }
-    // #swagger.parameters['email'] = { description: 'Correo del usuario', type: 'string', required: true }
-    // #swagger.parameters['registration_code'] = { description: 'Código de registro del usuario', type: 'string', required: true }
-    // #swagger.parameters['password'] = { description: 'Contraseña del usuario', type: 'string', required: true }
-    // #swagger.parameters['controller_id'] = { description: 'Id del controlador del usuario', type: 'number', required: true }
-    // #swagger.parameters['recruiter_id'] = { description: 'Id del reclutador del usuario', type: 'number', required: true }
-    // #swagger.parameters['country_id'] = { description: 'Id del país del usuario', type: 'number', required: true }
-    // #swagger.parameters['school_id'] = { description: 'Id de la escuela del usuario', type: 'number', required: true }
 
     try {
         const { body } = req;
@@ -35,7 +54,7 @@ export async function create(req, res, next) {
         }
 
         const hashPassword = await hash('Funval2024', 10);
-        await addstudent({ body, password: hashPassword });
+        await createStudent({ body, password: hashPassword });
         res.status(201).json({ message: 'User created successfully' });
 
     } catch (error) {
