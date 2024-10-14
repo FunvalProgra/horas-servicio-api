@@ -44,10 +44,24 @@ export async function getStudentById(id) {
  * @returns 
  */
 export async function createStudent(body) {
+    
     try {
       !body.middle_name && (body.middle_name = '');
       !body.second_last_name && (body.second_last_name = '');
-  
+        const unique_email = "SELECT email FROM users WHERE email = ?";
+        const unique_code = "SELECT registration_code FROM users WHERE registration_code = ?";
+
+        const [[email]] = await pool.execute(unique_email, [body.email]);
+        const [[code]] = await pool.execute(unique_code, [body.registration_code]);
+
+        if (email) {
+            throw { message: "email already exists", status: 400 };
+        }
+
+        if (code) {
+            throw { message: "registration code already exists", status: 400 };
+        }
+ 
       const values = [
         body.first_name,
         body.middle_name,

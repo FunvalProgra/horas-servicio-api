@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import { studen_schema } from "../libs/joi/student.schema.js";
 import { allStudents, getStudentById, createStudent } from "../models/student.model.js";
 import { addstudent } from "../models/user.model.js";
@@ -54,7 +55,7 @@ export async function create(req, res, next) {
         }
 
         const hashPassword = await hash('Funval2024', 10);
-        await createStudent({ body, password: hashPassword });
+        await createStudent({ ...body, password: hashPassword });
         res.status(201).json({ message: 'User created successfully' });
 
     } catch (error) {

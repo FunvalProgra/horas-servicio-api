@@ -6,7 +6,6 @@ export const studen_schema = joi.object({
     second_last_name: joi.string(),
     email: joi.string().email().required(),
     registration_code: joi.string().required(),
-    password: joi.string().required(),
     role_id: joi.number().required(),
     controller_id: joi.number().required(),
     recruiter_id: joi.number().required(),
