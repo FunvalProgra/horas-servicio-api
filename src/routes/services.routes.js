@@ -8,7 +8,7 @@ services_router.get("/", all);
 services_router.get("/:id", show);
 services_router.get("/evidence/:fileId", loadEvidence);
 services_router.post("/", upload.single('evidence'), create);
-services_router.put("/:id", update);
+services_router.put("/:id", upload.single('evidence'), update);
 services_router.patch("/:id/review", AccessValidation, review);
 services_router.delete("/:id", AccessValidation, remove);
 

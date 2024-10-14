@@ -53,8 +53,8 @@ async function create(req, res, next) {
 
     typeValidation(req.body, rules);
     await createService(amount_reported, evidence, description, user_id, category_id);
-
-    res.status(201).json({ message: 'Service created successfully' });
+ 
+    res.status(201).json({ message: 'Service created successfully', evidence });
   } catch (error) {
     if (evidence) {
       await deleteFile(evidence);
@@ -78,12 +78,15 @@ async function show(req, res, next) {
     const { id } = req.params;
     const { id: authId, role } = req.auth;
 
-    if (authId != id && role.name !== 'admin') {
+    if (authId != id && role.id !== 1) {
       throw { status: 401, message: 'Unauthorized' }
     }
 
     const service = await getServiceById(id);
-    res.json(service);
+    if (!service) {
+      throw { status: 404, message: 'Service not found' }
+    }
+    res.status(200).json(service);
 
   } catch (error) {
     next(error)
@@ -105,7 +108,7 @@ async function update(req, res, next) {
     const { id: user_id } = req.auth;
     const { amount_reported, evidence, description, category_id } = req.body;
     const service = await getServiceById(id);
-
+    const fields = {}
     if (!service) {
       throw { status: 404, message: 'Service not found' }
     }
@@ -113,8 +116,15 @@ async function update(req, res, next) {
       throw { status: 401, message: 'Unauthorized' }
     }
 
+    if (req.file) {
+      const fileId = service.evidence;
+      await deleteFile(fileId);
+      const evidence = await uploadFile('application/pdf', req.file.originalname, req.file.path);
+      fields['evidence'] = evidence;
+    }
+
     const rules = {}
-    const fields = {}
+  
 
     if (amount_reported) {
       rules['amount_reported'] = { type: 'number' }
@@ -132,15 +142,13 @@ async function update(req, res, next) {
       rules['category_id'] = { type: 'number' }
       fields['category_id'] = category_id;
     }
-
-    typeValidation(req.body, rules);
-
-
+ 
     await updateService(fields, id);
-    res.json(`Service with id ${id} updated successfully`);
+
+    res.status(201).json({message: `Service with id ${id} updated successfully`});
+
   } catch (error) {
     next(error)
-
   }
 
 }
@@ -155,7 +163,7 @@ async function review(req, res, next) {
   // #swagger.tags = ['Services']
   try {
     const { id } = req.params;
-    const { id: reviewerId } = req.auth;
+    const { id: reviewer_id } = req.auth;
     const { amount_approved, comment } = req.body
 
     const rules = {
@@ -164,7 +172,7 @@ async function review(req, res, next) {
     const values = {
       amount_approved,
       status: 1,
-      reviewer_id: reviewerId,
+      reviewer_id
     }
     if (comment) {
       rules['comment'] = { type: 'string' },
