@@ -15,15 +15,15 @@ async function getUserById(id) {
   }
 }
 
-async function createUser(email, registrationCode, password, roleId) {
-  const query = "INSERT INTO users (email, registration_code, password, roles_id) VALUES (?, ?, ?, ?)";
-  const [res] = await pool.execute(query, [email, registrationCode, password, roleId]);
+async function createUser(email, password, roleId) {
+  const query = "INSERT INTO users (email, password, role_id) VALUES (?, ?, ?)";
+  const [res] = await pool.execute(query, [email, password, roleId]);
   return res.insertId;
 }
 
-async function updateUser(id, email, registrationCode, password, roleId) {
-  const query = "UPDATE users SET email = ?, registration_code = ?, password = ?, roles_id = ? WHERe id = ?";
-  const [res] = await pool.execute(query, [email, registrationCode, password, roleId, id]);
+async function updateUser(id, email, password, roleId) {
+  const query = "UPDATE users SET email = ?, password = ?, roles_id = ? WHERe id = ?";
+  const [res] = await pool.execute(query, [email, password, roleId, id]);
   return res;
 }
 

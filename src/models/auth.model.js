@@ -12,7 +12,7 @@ export async function getUserByEmail(email) {
         const query = `
             SELECT u.id, u.email, u.password, r.id as role_id, r.name as role 
             FROM users u
-            JOIN roles r on r.id = u.roles_id
+            JOIN roles r on r.id = u.role_id
             WHERE u.email = ?
         `;
         const values = [email];

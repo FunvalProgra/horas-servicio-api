@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/libs/swagger.js"
+    "dev": "NODE --watch src/libs/swagger.js"
   },
   "keywords": [],
   "author": "joregesosa@gmail.com",
