@@ -8,9 +8,10 @@ import documentation_router from "./documentation.router.js";
 import verifyToken from "../middlewares/Auth.middleware.js";
 import studen_router from "./student.router.js";
 import country_router from "./country.routes.js";
-
+import controller_router from "./controller.routes.js";
+import recruiter_router from "./recruiter.routes.js";
+import school_router from "./school.routes.js";
 import AccessValidation from "../middlewares/AccessValidation.middleware.js";
-
 
 const app_router = Router();
 
@@ -30,6 +31,9 @@ function routes(app) {
     app_router.use("/categories", verifyToken, categories_router);
     app_router.use("/students", verifyToken ,studen_router);
     app_router.use("/country", verifyToken, country_router);
+    app_router.use("/controllers", verifyToken, controller_router);
+    app_router.use("/recruiters", verifyToken, recruiter_router);
+    app_router.use("/schools", verifyToken, school_router);
 
     app_router.use("/docs", documentation_router);
 }
