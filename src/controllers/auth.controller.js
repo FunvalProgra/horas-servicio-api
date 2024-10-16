@@ -20,10 +20,10 @@ async function login(req, res, next) {
       throw { message: "User not found", status: 404 };
     }
 
-   /*  const validPassword = await compare(password, user.password);
+    const validPassword = await compare(password, user.password);
     if (!validPassword) {
       throw { message: "Invalid password", status: 401 };
-    } */
+    }
 
     const payload = {
       id: user.id,
