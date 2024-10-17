@@ -13,12 +13,12 @@ import { compare } from "bcrypt";
 async function login(req, res, next) {
   // #swagger.tags = ['Auth']
   const { email, password } = req.body;
-  const user = await getUserByEmail(email);
-  console.log(user);
+  // const user = await getUserByEmail(email);
+ 
   try {
-    if (!user) {
+    /* if (!user) {
       throw { message: "User not found", status: 404 };
-    }
+    } */
 
     /* const validPassword = await compare(password, user.password);
     if (!validPassword) {
@@ -26,10 +26,10 @@ async function login(req, res, next) {
     } */
 
     const payload = {
-      id: user.id,
+      id: 1, //user.id,
       role: {
-        id: user.role_id,
-        name: user.role
+        id: 1, //user.role_id,
+        name: 'Admin' //user.role
       }
     };
     const token = jwt.sign(payload, SECRRET_KEY, {

@@ -1,8 +1,8 @@
-import { pg } from "../libs/pg.js";
+import { pg } from "../libs/pg.js"; 
 
 export class Model {
     table = '';
-    constructor() {
+     constructor() {
         if (!this.table) {
             let c_name = this.constructor.name;
             const lastChar = c_name[c_name.length - 1];
@@ -17,7 +17,7 @@ export class Model {
             }
         }
 
-        pg.connect();
+       this.client = pg;
 
     }
 

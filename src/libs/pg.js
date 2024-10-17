@@ -12,6 +12,6 @@ const pool = new Pool({
 
 })
 
+const client = await pool.connect();
 
-
-export { pool as pg }
+export { client as pg }

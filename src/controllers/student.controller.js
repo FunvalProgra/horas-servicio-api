@@ -1,7 +1,7 @@
 import { hash } from "bcrypt";
 import { studen_schema } from "../libs/joi/student.schema.js";
 import { allStudents, getStudentById, createStudent } from "../models/student.model.js";
-import { addstudent } from "../models/user.model.js";
+// import { addstudent } from "../models/user.model.js";
 import fs from "fs";
 
 /**
@@ -45,22 +45,22 @@ export async function create(req, res, next) {
     // #swagger.tags = ['Student']
     // #swagger.description = 'Endpoint para crear un nuevo usuario'
 
-    try {
-        const { body } = req;
-        body.role_id = 2;
-        const { error } = studen_schema.validate(body);
+    // try {
+    //     const { body } = req;
+    //     body.role_id = 2;
+    //     const { error } = studen_schema.validate(body);
 
-        if (error) {
-            throw { message: error.message, status: 400 };
-        }
+    //     if (error) {
+    //         throw { message: error.message, status: 400 };
+    //     }
 
-        const hashPassword = await hash('Funval2024', 10);
-        await createStudent({ ...body, password: hashPassword });
-        res.status(201).json({ message: 'User created successfully' });
+    //     const hashPassword = await hash('Funval2024', 10);
+    //     await createStudent({ ...body, password: hashPassword });
+    //     res.status(201).json({ message: 'User created successfully' });
 
-    } catch (error) {
-        next(error);
-    }
+    // } catch (error) {
+    //     next(error);
+    // }
 
 }
 

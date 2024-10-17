@@ -1,4 +1,4 @@
-import { allRecruiters, getRecruiterById } from "../models/recruiter.model.js";
+// import { allRecruiters, getRecruiterById } from "../models/recruiter.model.js";
 
 export async function all(req, res, next) {
     try {

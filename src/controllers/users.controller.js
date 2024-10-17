@@ -1,8 +1,10 @@
-import { allUsers, getUserById, createUser, updateUser, removeUser, addstudent } from "../models/user.model.js";
+// import { allUsers, getUserById, createUser, updateUser, removeUser, addstudent } from "../models/user.model.js";
+import { User } from "../models/user.model.js";
 import { user_schema } from "../libs/joi/user.schema.js";
 import { hash } from "bcrypt";
 import TypeValidation from "../utils/TypeValidation.js";
 import { createData } from "../models/data.model.js";
+import joi from "joi";
 
 
 /**
@@ -11,10 +13,16 @@ import { createData } from "../models/data.model.js";
  * @param {*} res
  * @param {*} next
  */
-async function all(req, res, next) {
+async function index(req, res, next) {
   // #swagger.tags = ['Users']
-  const users = await allUsers();
-  res.json(users);
+  try {
+    const user = new User();
+    const rs = await user.all();
+    res.status(200).json(rs);
+  } catch (error) {
+    next(error);
+  }
+
 }
 
 /**
@@ -23,25 +31,31 @@ async function all(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
-async function create(req, res, next) {
+async function store(req, res, next) {
   // #swagger.tags = ['Users']
+  // #swagger.example = { "account": { "email": "", "role_id": 1 }, "data": { "f_name": "", "s_name" "f_lastname": "", "f_lastname": "" }, "schools": [1, 2] }
+
   try {
+    const { account, data, schools } = req.body;
+    const password = await hash('Funval2024', 10);
 
-    await user_schema.validateAsync(req.body);
-
-    if (req.body.role_id === 2) {
-      throw { message: "Acceso denegado: Los estudiantes solo pueden ser registrados a través de la ruta /students.", status: 403 }
+    if (account.role_id === 2) {
+      throw { message: 'You cannot create a user with this role', status: 400 }
     }
 
+    const account_schema = joi.object({ email: joi.string().email().required(), role_id: joi.number().required() });
+    const data_schema = joi.object({ f_name: joi.string().required(), s_name: joi.string(), f_lastname: joi.string().required(), s_lastname: joi.string() });
+    const schools_schema = joi.array().items(joi.number().required());
 
-    const { email, role_id, first_name, middle_name, last_name, second_last_name } = req.body;
-    const hashedPassword = await hash("Funval2024", 10);
+    account_schema.validate(account);
+    data_schema.validate(data);
+    schools_schema.validate(schools);
 
-    const user_id = await createUser(email, hashedPassword, role_id);
+    const _user = new User();
 
-    const data_id = await createData(first_name, middle_name, last_name, second_last_name, user_id);
+    await _user.create({ user: { ...account, password }, data, schools });
 
-    res.status(201).json({ message: "user created successfully" });
+    res.status(201).json({ message: 'User created successfully' });
 
   } catch (error) {
     next(error);
@@ -57,9 +71,20 @@ async function create(req, res, next) {
  */
 async function show(req, res, next) {
   // #swagger.tags = ['Users']
-  const { id } = req.params;
-  const user = await getUserById(id);
-  res.json(user);
+  // #swagger.parameters['path.id'] = { description: 'User ID' }
+  try {
+    const { id } = req.params;
+    const user = new User();
+    const rs = await user.get(id);
+
+    if (!rs) {
+      throw { message: 'User not found', status: 404 }
+    }
+
+    res.status(200).json(rs);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -70,6 +95,8 @@ async function show(req, res, next) {
  */
 async function update(req, res, next) {
   // #swagger.tags = ['Users']
+  // #swagger.parameters['path.id'] = { description: 'User ID' }
+  // #swagger.example = { "account": { "email": "", "role_id": 1, "password": "1234567" }, "data": { "f_name": "", "s_name" "f_lastname": "", "f_lastname": "" }, "schools": [1, 2] }
 
   try {
     const { id } = req.params;
@@ -78,18 +105,23 @@ async function update(req, res, next) {
       throw { message: "You don't have permission to update this user", status: 403 }
     }
 
-    const rules = {
-      email: { required: true, email: true },
-      registrationCode: { required: true, type: 'string' },
-      password: { required: true, type: 'string' },
-      role_id: { required: true, type: 'number' },
+    const { account, data, schools } = req.body;
+    const account_schema = joi.object({ email: joi.string().email(), role_id: joi.number() });
+    const data_schema = joi.object({ f_name: joi.string(), s_name: joi.string(), f_lastname: joi.string(), s_lastname: joi.string() });
+    const schools_schema = joi.array().items(joi.number());
+
+    account_schema.validate(account);
+    data_schema.validate(data);
+    schools_schema.validate(schools); 
+
+    const _user = new User();
+    if(account?.password) {
+      account.password = await hash(account.password, 10);
     }
+    await _user.update(id, { user: account, data, schools });
 
-    TypeValidation(req.body, rules);
-
-    const { email, password, role_id } = req.body;
-    const updated = await updateUser(id, email, password, role_id);
-    res.json(`User with id ${req.params.id} updated`);
+    res.status(200).json({ message: 'User updated successfully' });
+    
   } catch (error) {
     next(error);
   }
@@ -115,4 +147,4 @@ async function remove(req, res, next) {
 
 
 
-export { all, create, show, update, remove };
+export { index, store, show, update, remove };
