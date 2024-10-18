@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/libs/swagger.js"
+    "dev": "NODE --watch src/libs/swagger.js"
   },
   "keywords": [],
   "author": "joregesosa@gmail.com",
@@ -18,8 +18,10 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
+    "joi": "^17.13.3",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.11.0",
+    "pg": "^8.13.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {

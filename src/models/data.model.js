@@ -20,9 +20,15 @@ async function getDataByUserId(userId) {
 /* f_name, s_name, f_lastname, s_lastname, user_id, */
 
 async function createData(f_name, s_name, f_lastname, s_lastname, user_id) {
-    const query = "INSERT INTO data (f_name, s_name, f_lastname, s_lastname, user_id) VALUES (?, ?, ?, ?, ?)";
-    const [rs] = await pool.execute(query, [f_name, s_name, f_lastname, s_lastname, user_id]);
-    return rs.insertId;
+    console.log({ f_name, s_name, f_lastname, s_lastname, user_id });
+    try {
+        const query = "INSERT INTO data (f_name, s_name, f_lastname, s_lastname, user_id) VALUES (?, ?, ?, ?, ?)";
+        const [rs] = await pool.execute(query, [f_name, s_name, f_lastname, s_lastname, user_id]);
+        return rs.insertId;
+    } catch (error) {
+        throw error;
+    }
+
 }
 
 async function updateData(id, f_name, s_name, f_lastname, s_lastname, user_id) {
