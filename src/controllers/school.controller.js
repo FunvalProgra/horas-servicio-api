@@ -1,9 +1,9 @@
 import { School } from '../models/school.model.js';
 import joi from 'joi';
-export async function all(req, res, next) {
-    //#swagger.tags = ['Schools']
+
+export async function index(req, res, next) {
+    //#swagger.summary = 'Get all schools'
     //#swagger.description = 'Endpoint to get all schools'
-    //#swagger.example = [{"id": 1, "name": "School 1"}, {"id": 2, "name": "School 2"}]
 
     try {
         const school = new School();
@@ -14,13 +14,10 @@ export async function all(req, res, next) {
     }
 }
 
-export async function get(req, res, next) {
-    //#swagger.tags = ['Schools']
+export async function show(req, res, next) {
+    //#swagger.summary = 'Get a school'
     //#swagger.description = 'Endpoint to get a school'
-    //#swagger.parameters['id'] = { description: 'School ID' }
-    //#swagger.responses[200] = { description: 'School found' }
-    //#swagger.responses[404] = { description: 'School not found' }
-    //#swagger.example = {"id": 1, "name": "School 1"}
+
     try {
         const school = new School();
         const { id } = req.params;
@@ -35,13 +32,22 @@ export async function get(req, res, next) {
 }
 
 export async function create(req, res, next) {
-    //#swagger.tags = ['Schools']
-    //#swagger.description = 'Endpoint to create a school'
-    //#swagger.parameters['name'] = { description: 'School name' }
-    //#swagger.responses[201] = { description: 'School created successfully' }
-    //#swagger.responses[400] = { description: 'Invalid data' }
-    //#swagger.example = { "name": "School 1" }
 
+    /*   #swagger.auto = false
+        #swagger.summary = 'Create a new school'
+        #swagger.description = 'Endpoint to create a new school'
+       #swagger.method = 'Post'
+ 
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'School Data',
+           required: true,
+           schema:  {
+                $name: 'school name',
+           }
+       }
+         
+   */
 
     try {
         const schema = joi.object({
@@ -64,13 +70,21 @@ export async function create(req, res, next) {
 }
 
 export async function update(req, res, next) {
-    //#swagger.tags = ['Schools']
-    //#swagger.description = 'Endpoint to update a school'
-    //#swagger.parameters['id'] = { description: 'School ID' }
-    //#swagger.parameters['name'] = { description: 'School name' }
-    //#swagger.responses[201] = { description: 'School updated successfully' }
-    //#swagger.responses[400] = { description: 'Invalid data' }
-    //#swagger.example = { "name": "School 1" }
+    /*   #swagger.auto = false
+      #swagger.summary = 'Updata a new school'
+      #swagger.description = 'Endpoint to updata a new school'
+     #swagger.method = 'Post'
+ 
+     #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'School Data',
+         required: true,
+         schema:  {
+              $name: 'school name',
+         }
+     }
+       
+ */
     try {
         const schema = joi.object({
             name: joi.string().required()
@@ -93,3 +107,4 @@ export async function update(req, res, next) {
 
 }
 
+export default { index, show, create, update };

@@ -1,35 +1,44 @@
-import { getUserByEmail } from "../models/auth.model.js";
+import { AuthModel } from "../models/auth.model.js";
 import { SECRRET_KEY } from "../config/app.config.js";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
 
-/**
-  *@description user login
-    * @param {*} req
-    * @param {*} res
-    * @param {*} next
-    * 
- */
-async function login(req, res, next) {
-  // #swagger.tags = ['Auth']
-  const { email, password } = req.body;
-  // const user = await getUserByEmail(email);
  
-  try {
-    /* if (!user) {
-      throw { message: "User not found", status: 404 };
-    } */
+async function login(req, res, next) {
+    /*   #swagger.auto = false
+        #swagger.summary = 'Login into the system'
+        #swagger.description = 'Endpoint to login into the system'
+       #swagger.method = 'Post'
+ 
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'School Data',
+           required: true,
+           schema:  {
+                email: 'user email',
+                password: 'user password'
+           }
+       }
+         
+   */
+  const { email, password } = req.body;
+  const user = await AuthModel.getUserByEmail(email);
 
-    /* const validPassword = await compare(password, user.password);
+  try {
+    if (!user) {
+      throw { message: "User not found", status: 404 };
+    }
+
+    const validPassword = await compare(password, user.password);
     if (!validPassword) {
       throw { message: "Invalid password", status: 401 };
-    } */
+    }
 
     const payload = {
-      id: 1, //user.id,
+      id: user.id,
       role: {
-        id: 1, //user.role_id,
-        name: 'Admin' //user.role
+        id: user.role_id,
+        name: user.role
       }
     };
     const token = jwt.sign(payload, SECRRET_KEY, {
@@ -43,31 +52,8 @@ async function login(req, res, next) {
   }
 
 }
-
-/**
-  *@description user logout
-    * @param {*} req
-    * @param {*} res
-    * @param {*} next
-    * 
- */
-function logout(req, res, next) {
-  // #swagger.tags = ['Auth']
-  res.json("Logout");
-}
-
-/**
-  *@description user register
-    * @param {*} req
-    * @param {*} res
-    * @param {*} next
-    * 
- */
-function register(req, res, next) {
-  // #swagger.tags = ['Auth']
-  res.json("Register");
-}
+ 
 
 
-export { login, logout, register };
+export { login };
 
