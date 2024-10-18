@@ -107,16 +107,10 @@ async function show(req, res, next) {
   }
 }
 
-/**
- * @description update a user
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
 async function update(req, res, next) {
   /*   #swagger.auto = false
         #swagger.summary =  'Update a user'
-        #swagger.description =  'Endpoint to update a user with the role of admin, controller or recruiter, can update wathever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it'
+        #swagger.description =  'Endpoint to update a user with the role of admin, controller or recruiter, can update whatever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it'
        #swagger.method = 'PUT'
  
        #swagger.parameters['body'] = {

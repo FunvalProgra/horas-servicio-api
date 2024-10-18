@@ -1,70 +1,138 @@
 import { hash } from "bcrypt";
-import { studen_schema } from "../libs/joi/student.schema.js";
-import { allStudents, getStudentById, createStudent } from "../models/student.model.js";
-// import { addstudent } from "../models/user.model.js";
+import { Student } from "../models/student.model.js";
+import { user_schema, data_schema } from "../libs/joi/student.schema.js"
 import fs from "fs";
 
-/**
- * @description get all students
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
-export async function all(req, res, next) {
+
+export async function index(req, res, next) {
+    // #swagger.summary = 'Get all students'
+    // #swagger.description = 'Endpoint to get all students'
     try {
-        const students = await allStudents();
+        const student = new Student()
+        const students = await student.all();
         res.status(200).json(students);
     } catch (error) {
         next(error);
     }
+
 }
 
 export async function show(req, res, next) {
-    try {
-        const {auth} = req;
-        const { id } = req.params;
-        if(id !== auth.id && auth.role_id !== 1){
-            throw { message: "You don't have permission to access this resource", status: 403 };
+    // #swagger.summary = 'Get a student'
+    // #swagger.description = 'Endpoint to get a student'
+    // #swagger.parameters['id'] = { description: 'Student id', type: 'integer', required: true }
 
-        }
-        const student = await getStudentById(id);
-        res.status(200).json(student);
+    try {
+        const { id } = req.params;
+        const student = new Student()
+        const student_data = await student.find(id);
+        res.status(200).json(student_data);
     } catch (error) {
         next(error);
     }
 }
 
-/**
- * @description create a user
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
 export async function create(req, res, next) {
+    /*   #swagger.auto = false
+           #swagger.summary = 'Create a new student'
+           #swagger.description = 'Endpoint to create a new student'
+          #swagger.method = 'Post'
+   
+          #swagger.parameters['body'] = {
+              in: 'body',
+              description: 'Student data.',
+              required: true,
+              schema:  {
+                  "data": {
+                      "f_name": "",
+                      "s_name": "",
+                      "f_lastname": "",
+                      "s_lastname": ""
+                  },
+                  "user": {
+                      "email": "",
+                       "registration_code": "",
+                  },
+                   "student": {
+                       "controller_id": 1,
+                       "recruiter_id": 1,
+                      "country_id": 1,
+                      level_id: 1,
+                       
+                  }    
+              }
+          }
+            
+      */
+    try {
+        const student = new Student()
+        const { body } = req;
+        const { error } = user_schema.validate(body.user);
+        const { error: error_data } = data_schema.validate(body.data);
 
-    // #swagger.tags = ['Student']
-    // #swagger.description = 'Endpoint para crear un nuevo usuario'
+        if (error) {
+            throw { message: error.message, status: 400 };
+        }
+        if (error_data) {
+            throw { message: error_data.message, status: 400 };
+        }
 
-    // try {
-    //     const { body } = req;
-    //     body.role_id = 2;
-    //     const { error } = studen_schema.validate(body);
+        const password = await hash('Funval2024', 10);
+        await student.create({ ...body, password });
 
-    //     if (error) {
-    //         throw { message: error.message, status: 400 };
-    //     }
+        res.status(201).json({ message: 'User created successfully' });
 
-    //     const hashPassword = await hash('Funval2024', 10);
-    //     await createStudent({ ...body, password: hashPassword });
-    //     res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+        next(error);
+    }
 
-    // } catch (error) {
-    //     next(error);
-    // }
 
 }
 
-export async function masiveCreate(req, res, next) {
+export async function update(req, res, next) {
+     /*   #swagger.auto = false
+           #swagger.summary = 'Update a student'
+           #swagger.description = 'Endpoint to update a student, can update whatever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it'
+          #swagger.method = 'Post'
+   
+          #swagger.parameters['body'] = {
+              in: 'body',
+              description: 'Student data.',
+              required: true,
+              schema:  {
+                  "data": {
+                      "f_name": "",
+                      "s_name": "",
+                      "f_lastname": "",
+                      "s_lastname": ""
+                  },
+                  "user": {
+                      "email": "",
+                       "registration_code": "",
+                  },
+                   "student": {
+                       "controller_id": 1,
+                       "recruiter_id": 1,
+                      "country_id": 1,
+                      level_id: 1,
+                       
+                  }    
+              }
+          }
+            
+      */
+    try {
+        const { id } = req.params;
+        const { body } = req;
+        const student = new Student()
+        await student.update(id, body);
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/* export async function masiveCreate(req, res, next) {
     // #swagger.tags = ['Student']
     // #swagger.description = 'Endpoint para crear un nuevos usuario de manera masiva'
     // #swagger.parameters['file'] = { description: 'Archivo con los datos de los usuarios', type: 'file', required: true }
@@ -86,17 +154,8 @@ export async function masiveCreate(req, res, next) {
         next(error);
     }
 
-}
-
-export async function remove(req, res, next) {
-    try {
-        const { id } = req.params;
-        await removeData(id);
-        res.status(200).json({ message: 'User deleted successfully' });
-    } catch (error) {
-        next(error);
-    }
-}
+} */
 
 
-export default { create, remove };
+
+export default { create, index, show, update };

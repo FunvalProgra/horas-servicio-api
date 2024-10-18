@@ -1,91 +1,147 @@
-import { pool } from "../libs/pool.js";
+import { Model } from "./model.js";
 
-export async function allStudents() {
-    let user_query = "SELECT id, email  FROM users WHERE role_id = 2";
-    let data_query = "SELECT id, f_name, s_name, f_lastname, s_lastname, user_id FROM data WHERE user_id = ?";
-    let role_query = "SELECT id, name FROM roles WHERE id = 2";
-    try {
-        const [users] = await pool.execute(user_query);
-        const students = [];
-        for (const user of users) {
-            const [[data]] = await pool.execute(data_query, [user.id]);
-            const [[role]] = await pool.execute(role_query);
-            students.push({ ...user, data, role });
-        }
-        return students;
-    } catch (error) {
-        throw error;
+
+export class Student extends Model {
+    constructor() {
+        super();
     }
+
+    async all() {
+        try {
+            const query = `SELECT 
+                    u.id, u.email, u.registration_code, st.level,
+                    concat(d.f_name, ' ', d.s_name, ' ', d.f_lastname, ' ', d.s_lastname) as name,
+                    json_build_object(
+                        'id', re.id, 
+                        'name', concat(re.f_name, ' ', re.s_name, ' ', re.f_lastname, ' ', re.s_lastname)
+                    ) AS recruiter, 
+                    json_build_object(
+                        'id', co.id, 
+                        'name', concat(co.f_name, ' ', co.s_name, ' ', co.f_lastname, ' ', co.s_lastname)
+                    ) AS controller
+                FROM 
+                    students st
+                JOIN 
+                    users u ON st.user_id = u.id
+                JOIN 
+                    data d ON st.user_id = d.user_id
+                JOIN 
+                    data re ON st.recruiter_id = re.user_id
+                JOIN 
+                    data co ON st.controller_id = co.user_id;
+            `
+            const res = await this.client.query(query);
+
+            return res.rows;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async create({ user, data, student }) {
+
+        try {
+            const user_fields = Object.keys(user).join(',');
+            const user_values = Object.values(user).map((_, i) => `$${i + 1}`).join(',');
+            const user_query = `INSERT INTO users (${user_fields}, role_id) VALUES (${user_values}, $${Object.keys(user).length + 1}) RETURNING *`;
+
+            const data_fields = Object.keys(data).join(',');
+            const data_values = Object.values(data).map((_, i) => `$${i + 1}`).join(',');
+            const data_query = `INSERT INTO data (${data_fields}, user_id) VALUES (${data_values},$${Object.keys(data).length + 1} ) RETURNING *`;
+
+            const student_fields = Object.keys(student).join(',');
+            const student_values = Object.values(student).map((_, i) => `$${i + 1}`).join(',');
+            const student_query = `INSERT INTO students (${student_fields}, user_id) VALUES (${student_values},$${Object.keys(student).length + 1} ) RETURNING *`;
+
+
+            await this.client.query('BEGIN');
+
+            const user_res = await this.client.query(user_query, [...Object.values(user), 2]);
+
+            let user_id = user_res.rows[0].id;
+            const data_res = await this.client.query(data_query, [...Object.values(data), user_id]);
+
+            const student_res = await this.client.query(student_query, [...Object.values(student), user_id]);
+
+            await this.client.query('COMMIT');
+
+            return true;
+        } catch (error) {
+            await this.client.query('ROLLBACK');
+            throw error;
+        }
+
+    }
+
+    async find(id) {
+        try {
+            const query = `SELECT 
+                    u.id, u.email, st.level, u.registration_code, 
+                    concat(d.f_name, ' ', d.s_name, ' ', d.f_lastname, ' ', d.s_lastname) as name,
+                    json_build_object(
+                        'id', re.id, 
+                        'name', concat(re.f_name, ' ', re.s_name, ' ', re.f_lastname, ' ', re.s_lastname)
+                    ) AS recruiter, 
+                    json_build_object(
+                        'id', co.id, 
+                        'name', concat(co.f_name, ' ', co.s_name, ' ', co.f_lastname, ' ', co.s_lastname)
+                    ) AS controller
+                FROM 
+                    students st
+                JOIN 
+                    users u ON st.user_id = u.id
+                JOIN 
+                    data d ON st.user_id = d.user_id
+                JOIN 
+                    data re ON st.recruiter_id = re.user_id
+                JOIN 
+                    data co ON st.controller_id = co.user_id
+                WHERE
+                    u.id = $1;
+            `
+
+            const res = await this.client.query(query, [id]);
+
+            return res.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async update(id, { user, data, student }) {
+        try {
+
+            await this.client.query('BEGIN');
+            if (user) {
+                const user_fields = Object.keys(user).map((field, i) => `${field} = $${i + 1}`).join(',');
+                const user_query = `UPDATE users SET ${user_fields} WHERE id = $${Object.keys(user).length + 1} RETURNING *`;
+                const user_res = await this.client.query(user_query, [...Object.values(user), id]);
+            }
+
+            if (data) {
+                const data_fields = Object.keys(data).map((field, i) => `${field} = $${i + 1}`).join(',');
+                const data_query = `UPDATE data SET ${data_fields} WHERE user_id = $${Object.keys(data).length + 1} RETURNING *`;
+                const data_res = await this.client.query(data_query, [...Object.values(data), id]);
+            }
+
+            if (student) {
+                const student_fields = Object.keys(student).map((field, i) => `${field} = $${i + 1}`).join(',');
+                const student_query = `UPDATE students SET ${student_fields} WHERE user_id = $${Object.keys(student).length + 1} RETURNING *`;
+                const student_res = await this.client.query(student_query, [...Object.values(student), id]);
+            }
+
+
+
+            await this.client.query('COMMIT');
+
+            return true;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
 
 }
-
-export async function getStudentById(id) {
-    let user_query = "SELECT id, email  FROM users WHERE role_id = 2 AND id = ?";
-    let data_query = "SELECT id, f_name, s_name, f_lastname, s_lastname, user_id FROM data WHERE user_id = ?";
-    let role_query = "SELECT id, name FROM roles WHERE id = 2";
-    try {
-        const [[user]] = await pool.execute(user_query, [id]);
-
-        if (!user) {
-            throw { message: "student not found", status: 404 };
-        }
-
-        const [[data]] = await pool.execute(data_query, [id]);
-        const [[role]] = await pool.execute(role_query);
-        return { ...user, data, role };
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * @description create a new student
- * @param {Object} body 
- * @returns 
- */
-export async function createStudent(body) {
-    
-    try {
-      !body.middle_name && (body.middle_name = '');
-      !body.second_last_name && (body.second_last_name = '');
-        const unique_email = "SELECT email FROM users WHERE email = ?";
-        const unique_code = "SELECT registration_code FROM users WHERE registration_code = ?";
-
-        const [[email]] = await pool.execute(unique_email, [body.email]);
-        const [[code]] = await pool.execute(unique_code, [body.registration_code]);
-
-        if (email) {
-            throw { message: "email already exists", status: 400 };
-        }
-
-        if (code) {
-            throw { message: "registration code already exists", status: 400 };
-        }
- 
-      const values = [
-        body.first_name,
-        body.middle_name,
-        body.last_name,
-        body.second_last_name,
-        body.email,
-        body.registration_code,
-        body.password,
-        body.role_id,
-        body.controller_id,
-        body.recruiter_id,
-        body.country_id,
-        body.school_id
-      ]
-  
-      const query = "CALL create_new_student(?,?,?,?,?,?,?,?,?,?,?,?)";
-      const [res] = await pool.execute(query, values);
-  
-      return res;
-  
-    } catch (error) {
-      throw error;
-    }
-  
-  }
-
-export default { allStudents, getStudentById, createStudent };
