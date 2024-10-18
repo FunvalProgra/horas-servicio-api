@@ -8,8 +8,6 @@ import documentation_router from "./documentation.router.js";
 import verifyToken from "../middlewares/Auth.middleware.js";
 import studen_router from "./student.router.js";
 import country_router from "./country.routes.js";
-import controller_router from "./controller.routes.js";
-import recruiter_router from "./recruiter.routes.js";
 import school_router from "./school.routes.js";
 import AccessValidation from "../middlewares/AccessValidation.middleware.js";
 
@@ -25,13 +23,13 @@ function routes(app) {
 
     app_router.use("/auth", auth_router);
 
-    app_router.use("/services", verifyToken, services_router);
+    app_router.use("/services", verifyToken, services_router /* #swagger.tags = ['Services'] */);
     app_router.use("/users", verifyToken, user_router   /* #swagger.tags = ['Users'] */);
-    app_router.use("/roles", verifyToken, AccessValidation, roles_router);
-    app_router.use("/categories", verifyToken, categories_router);
-    app_router.use("/students", verifyToken ,studen_router /* #swagger.tags = ['Students'] */);
-    app_router.use("/country", verifyToken, country_router);
-    app_router.use("/schools", verifyToken, school_router);
+    app_router.use("/roles", verifyToken, AccessValidation, roles_router /* #swagger.tags = ['Roles'] */);
+    app_router.use("/categories", verifyToken, categories_router /* #swagger.tags = ['Categories'] */);
+    app_router.use("/students", verifyToken, studen_router /* #swagger.tags = ['Students'] */);
+    app_router.use("/country", verifyToken, country_router /* #swagger.tags = ['Country'] */);
+    app_router.use("/schools", verifyToken, school_router /* #swagger.tags = ['Schools'] */);
 
     app_router.use("/docs", documentation_router /* #swagger.ignore = true */);
 }

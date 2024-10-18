@@ -23,7 +23,7 @@ async function index(req, res, next) {
 }
 
 
-async function store(req, res, next) {
+async function create(req, res, next) {
 
   /*   #swagger.auto = false
         #swagger.summary = 'Create a new user'
@@ -187,4 +187,4 @@ function getRolId(role) {
 }
 
 
-export { index, store, show, update };
+export { index, create, show, update };
