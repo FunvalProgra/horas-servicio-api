@@ -6,7 +6,7 @@ export const index = async (req, res, next) => {
     //#swagger.description = 'get all countries';
     try {
         const country = new Country();
-        const countries = await country.get();
+        const countries = await country.all();
         res.status(200).json(countries);
     } catch (error) {
         next(error);
@@ -18,7 +18,7 @@ export const show = async (req, res, next) => {
     //#swagger.description = 'get a country by id';
     try {
         const country = new Country();
-        const countries = await country.find(req.params.id);
+        const countries = await country.get(req.params.id);
         res.status(200).json(countries);
     } catch (error) {
         next(error);
@@ -52,7 +52,7 @@ export const create = async (req, res, next) => {
 
         const country = new Country();
         const countries = await country.create(req.body);
-        res.status(200).json(countries);
+        res.status(200).json({ message: 'Country created successfully'});
     } catch (error) {
         next(error);
     }
@@ -90,7 +90,7 @@ export const update = async (req, res, next) => {
         if (!exist) return res.status(404).json({ error: 'Country not found' });
 
         const countries = await country.update(req.params.id, req.body);
-        res.status(200).json(countries);
+        res.status(200).json({ message: 'Country updated successfully' });
     } catch (error) {
         next(error);
     }

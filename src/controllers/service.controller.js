@@ -3,7 +3,6 @@ import fs from 'fs';
 import joi from 'joi';
 import { Service } from "../models/service.model.js";
 import { downloadFile, uploadFile, deleteFile } from "../libs/google.drive.js";
-import typeValidation from "../utils/TypeValidation.js";
 
 
 /**
@@ -13,6 +12,7 @@ import typeValidation from "../utils/TypeValidation.js";
  * @param {*} next
  */
 async function index(req, res, next) {
+  console.log("here");
   // #swagger.summary = 'Get all services'
   // #swagger.description = 'Endpoint to get all services, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services, if the status query is passed, it will return the services with the status passed, 0 for pending and 1 for approved, '
   try {
@@ -110,7 +110,8 @@ async function show(req, res, next) {
     const { id } = req.params;
     const { id: authId, role } = req.auth;
 
-    if (authId != id && role.id !== 1) {
+    
+    if (authId != id && role.name !== "Admin") {
       throw { status: 401, message: 'Unauthorized' }
     }
     const service = new Service();

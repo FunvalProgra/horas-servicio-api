@@ -2,27 +2,29 @@ import { AuthModel } from "../models/auth.model.js";
 import { SECRRET_KEY } from "../config/app.config.js";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
+import { auth } from "googleapis/build/src/apis/abusiveexperiencereport/index.js";
 
- 
+
 async function login(req, res, next) {
-    /*   #swagger.auto = false
-        #swagger.summary = 'Login into the system'
-        #swagger.description = 'Endpoint to login into the system'
-       #swagger.method = 'Post'
+  /*   #swagger.auto = false
+      #swagger.summary = 'Login into the system'
+      #swagger.description = 'Endpoint to login into the system'
+     #swagger.method = 'Post'
  
-       #swagger.parameters['body'] = {
-           in: 'body',
-           description: 'School Data',
-           required: true,
-           schema:  {
-                email: 'user email',
-                password: 'user password'
-           }
-       }
-         
-   */
+     #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'School Data',
+         required: true,
+         schema:  {
+              email: 'user email',
+              password: 'user password'
+         }
+     }
+       
+ */
   const { email, password } = req.body;
-  const user = await AuthModel.getUserByEmail(email);
+  const authModel = new AuthModel();
+  const user = await authModel.getUserByEmail(email);
 
   try {
     if (!user) {
@@ -31,7 +33,7 @@ async function login(req, res, next) {
 
     const validPassword = await compare(password, user.password);
     if (!validPassword) {
-      throw { message: "Invalid password", status: 401 };
+      throw { message: "Invalid email or password", status: 401 };
     }
 
     const payload = {
@@ -45,15 +47,34 @@ async function login(req, res, next) {
       expiresIn: "24h",
     });
 
-    return res.status(200).json({ token });
+    const profile = await authModel.getUserById(user.id);
+   
+    res.status(200).json({   ...profile, token });
 
   } catch (error) {
     next(error);
   }
 
 }
- 
+
+async function profile(req, res, next) {
+  try {
+    const { id } = req.auth;
+    const authModel = new AuthModel();
+    const user = await authModel.getUserById(id);
+    if (!user) {
+      throw { status: 404, message: "User not found" };
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error)
+
+  }
+
+}
 
 
-export { login };
+
+export { login, profile };
 
