@@ -57,7 +57,7 @@ export class Model {
         try {
             const fields = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(',');
             const query = `UPDATE ${this.table} SET ${fields} WHERE id = $${Object.keys(data).length + 1} RETURNING *`;
-            console.log(Object.values(data));
+            console.log({query, ...data});
             const res = await pg.query(query, [...Object.values(data), id]);
             return res;  
         } catch (error) {

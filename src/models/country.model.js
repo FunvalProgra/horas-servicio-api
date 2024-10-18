@@ -1,15 +1,7 @@
-import { pool } from "../libs/pool.js";
+import { Model } from "./model.js";
 
-export async function allCountries() {
-  try {
-    const query = "SELECT * FROM countries";
-    const [res] = await pool.execute(query);
-    return res;
-  } catch (error) {
-    throw error;
+export class Country extends Model {
+  constructor() {
+    super();
   }
-
 }
-
-
-export default { allCountries };

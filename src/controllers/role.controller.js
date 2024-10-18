@@ -1,4 +1,3 @@
-/* import { allRoles, getRolById, createRole, updateRole, removeRole} from "../models/role.model.js"; */
 import { Role } from "../models/role.model.js";
 
 /**
@@ -8,9 +7,9 @@ import { Role } from "../models/role.model.js";
  * @param {*} next
  */
 async function all(req, res, next) {
-  // #swagger.tags = ['Roles']
+  // #swagger.summary = 'Get all roles
   // #swagger.description = 'Endpoint to get all roles'
-  // #swagger.example =  [{"id": 1, "name": "Admin"}, {"id": 2, "name": "User"}] 
+
 
   try {
     const role = new Role();
@@ -29,14 +28,8 @@ async function all(req, res, next) {
  * @param {*} next
  */
 async function show(req, res, next) {
-  // #swagger.tags = ['Roles']
-
-  // #swagger.description = 'Endpoint to get a role'
-  // #swagger.parameters['id'] = { description: 'Role ID' }
-  // #swagger.responses[200] = { description: 'Role found' }
-  // #swagger.responses[404] = { description: 'Role not found' }
-
-  // #swagger.example = {"id": 1, "name": "Admin"}
+  // #swagger.summary = 'Get a role'
+  // #swagger.description = 'Endpoint to get a role by id'
   try {
     const role = new Role();
     const { id } = req.params;
