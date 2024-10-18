@@ -1,0 +1,1314 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Horas de Servicio API",
+    "description": "Demo API para curso de React y Node.js",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1/"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Login into the system",
+        "description": "Endpoint to login into the system",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "School Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user email"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "user password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/services/": {
+      "get": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Get all services",
+        "description": "Endpoint to get all services, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services, if the status query is passed, it will return the services with the status passed, 0 for pending and 1 for approved, ",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Create a new service",
+        "description": "Endpoint to create a new service",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Service data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount_reported": {
+                  "type": "string",
+                  "example": "Amount reported - number"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Description"
+                },
+                "category_id": {
+                  "type": "string",
+                  "example": "Category id"
+                },
+                "level": {
+                  "type": "string",
+                  "example": "Level -"
+                },
+                "evidence": {
+                  "type": "string",
+                  "example": "Evidence - pdf file"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/services/{id}": {
+      "get": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Get a service",
+        "description": "Endpoint to get a service by id, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "update a service",
+        "description": "Endpoint to update a service, can update amount_reported, description, category_id and evidence only, evidence is a pdf file, if the evidence is passed, it will be  , if not, it will not be updated, the same for the other fields",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Service data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount_reported": {
+                  "type": "string",
+                  "example": "Amount reported - number"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Description"
+                },
+                "category_id": {
+                  "type": "string",
+                  "example": "Category id"
+                },
+                "level": {
+                  "type": "string",
+                  "example": "Level -"
+                },
+                "evidence": {
+                  "type": "string",
+                  "example": "Evidence - pdf file"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/services/evidence/{fileId}": {
+      "get": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Download service evidence o render in browser",
+        "description": "Endpoint to download the evidence of a service, if the opt query is passed with the value download, it will download the file, if not, it will render in the browser\r  try {\r  const { opt } = req.query;\r \r  const { fileId } = req.params;\r  if (!fileId) {\r  throw { status: 400, message: ",
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/services/{id}/review": {
+      "patch": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Review a service",
+        "description": "Endpoint to review or approved a service, can update amount_approved and comment only, comment is optional",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Service data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount_approved": {
+                  "type": "string",
+                  "example": "Amount approved - number"
+                },
+                "comment": {
+                  "type": "string",
+                  "example": "Comment"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "description": "Endpoint to get all users can be filtered by role with the query parameter r = (admin, controller, recruiter)",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "r",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Endpoint to create a new user with the role of admin, controller or recruiter",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "f_name": {
+                      "type": "string",
+                      "example": "Monkey"
+                    },
+                    "s_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "f_lastname": {
+                      "type": "string",
+                      "example": "D."
+                    },
+                    "s_lastname": {
+                      "type": "string",
+                      "example": "Lufy"
+                    }
+                  }
+                },
+                "account": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": "monke_D@mail.com"
+                    },
+                    "role_id": {
+                      "type": "number",
+                      "example": 3
+                    }
+                  }
+                },
+                "schools": {
+                  "type": "array",
+                  "example": [
+                    1
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "message": "User   successfully",
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by id",
+        "description": "Endpoint to get a user by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User id"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update a user",
+        "description": "Endpoint to update a user with the role of admin, controller or recruiter, can update whatever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "f_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "f_lastname": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_lastname": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                },
+                "account": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "role_id": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  }
+                },
+                "schools": {
+                  "type": "array",
+                  "example": [
+                    1
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/roles/": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get all roles",
+        "description": "Endpoint to get all roles",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get a role",
+        "description": "Endpoint to get a role by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/categories/": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get all categories",
+        "description": "Endpoint to get all service categories",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create a new category",
+        "description": "Endpoint to create a new category",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Category data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Category name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Category description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get category by id",
+        "description": "Endpoint to get a category by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Update a category",
+        "description": "Endpoint to update a category, can update name and description only",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Category data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Category name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Category description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/students/": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "summary": "Get all students",
+        "description": "Endpoint to get all students",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Students"
+        ],
+        "summary": "Create a new student",
+        "description": "Endpoint to create a new student",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Student data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "f_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "f_lastname": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_lastname": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "registration_code": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                },
+                "student": {
+                  "type": "object",
+                  "properties": {
+                    "controller_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "recruiter_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "country_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "level_id": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "summary": "Get a student",
+        "description": "Endpoint to get a student",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Student id"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Students"
+        ],
+        "summary": "Update a student",
+        "description": "Endpoint to update a student, can update whatever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Student data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "f_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "f_lastname": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "s_lastname": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "registration_code": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                },
+                "student": {
+                  "type": "object",
+                  "properties": {
+                    "controller_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "recruiter_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "country_id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "level_id": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/country/": {
+      "get": {
+        "tags": [
+          "Country"
+        ],
+        "summary": "Get all countries",
+        "description": "get all countries",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Country"
+        ],
+        "summary": "Create a new country",
+        "description": "Endpoint to create a new country",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Country information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "country name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/country/{id}": {
+      "get": {
+        "tags": [
+          "Country"
+        ],
+        "summary": "Get a country by id",
+        "description": "get a country by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Country"
+        ],
+        "summary": "update a country",
+        "description": "Endpoint to update a country",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Country data.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "country name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/schools/": {
+      "get": {
+        "tags": [
+          "Schools"
+        ],
+        "summary": "Get all schools",
+        "description": "Endpoint to get all schools",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Schools"
+        ],
+        "summary": "Create a new school",
+        "description": "Endpoint to create a new school",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "School Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "school name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/schools/{id}": {
+      "get": {
+        "tags": [
+          "Schools"
+        ],
+        "summary": "Get a school",
+        "description": "Endpoint to get a school",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Schools"
+        ],
+        "summary": "Updata a new school",
+        "description": "Endpoint to updata a new school",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "School Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "school name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}

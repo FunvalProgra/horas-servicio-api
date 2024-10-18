@@ -1,6 +1,5 @@
 /node_modules
 /.env
-/swagger-output.json
 /hs_db_script.sql
 /package-lock.json
 /apikey.json
