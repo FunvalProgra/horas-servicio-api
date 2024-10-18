@@ -5,8 +5,10 @@ export class User extends Model {
     super();
   }
 
-  async all() {
+  async all(role_id) {
     try {
+      let where = role_id ===2 ? `WHERE role_id <> $1`: `WHERE role_id = $1`;
+   
       const user_query = `SELECT  u.id,  u.email,  u.role_id,  d.f_name,  d.s_name,  d.f_lastname,  d.s_lastname,
           json_build_object('id', r.id, 'name', r.name) as role,
           COALESCE((SELECT json_agg(s.name) FROM school_user us 
@@ -14,11 +16,9 @@ export class User extends Model {
           FROM  users u  
           INNER JOIN  data d ON u.id = d.user_id
           INNER JOIN  roles r ON u.role_id = r.id
-          WHERE role_id <> 2
+          ${where}
       `;
-      const res = await this.client.query(user_query);
-
-
+      const res = await this.client.query(user_query, [role_id]);
 
       return res.rows;
     } catch (error) {
@@ -83,7 +83,7 @@ export class User extends Model {
   async update(id, { user, data, schools }) {
     try {
 
-       await this.client.query('BEGIN');
+      await this.client.query('BEGIN');
 
       if (user) {
         const user_fields = Object.keys(user).map((field, i) => `${field} = $${i + 1}`).join(',');
@@ -112,5 +112,6 @@ export class User extends Model {
       throw error;
     }
   }
+
 
 }

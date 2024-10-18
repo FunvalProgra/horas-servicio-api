@@ -1,23 +1,20 @@
-// import { allUsers, getUserById, createUser, updateUser, removeUser, addstudent } from "../models/user.model.js";
 import { User } from "../models/user.model.js";
-import { user_schema } from "../libs/joi/user.schema.js";
 import { hash } from "bcrypt";
-import TypeValidation from "../utils/TypeValidation.js";
-import { createData } from "../models/data.model.js";
 import joi from "joi";
 
 
-/**
- * @description get all users
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
 async function index(req, res, next) {
-  // #swagger.tags = ['Users']
+  //#swagger.summary = 'Get all users'
+  //#swagger.description = 'Endpoint to get all users can be filtered by role with the query parameter r = (admin, controller, recruiter)'
   try {
+    const { r } = req.query;
+
     const user = new User();
-    const rs = await user.all();
+    let role_id = 2;
+    if (r) {
+      role_id = getRolId(r);
+    }
+    const rs = await user.all(role_id);
     res.status(200).json(rs);
   } catch (error) {
     next(error);
@@ -25,15 +22,39 @@ async function index(req, res, next) {
 
 }
 
-/**
- * @description create a user
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
+
 async function store(req, res, next) {
-  // #swagger.tags = ['Users']
-  // #swagger.example = { "account": { "email": "", "role_id": 1 }, "data": { "f_name": "", "s_name" "f_lastname": "", "f_lastname": "" }, "schools": [1, 2] }
+
+  /*   #swagger.auto = false
+        #swagger.summary = 'Create a new user'
+        #swagger.description = 'Endpoint to create a new user with the role of admin, controller or recruiter'
+       #swagger.method = 'Post'
+       #swagger.produces = ['form-data']
+       #swagger.consumes = ['application/json']
+ 
+
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'User data.',
+           required: true,
+           schema:  {
+               "data": {
+                   "f_name": "Monkey",
+                   "s_name": "",
+                   "f_lastname": "D.",
+                   "s_lastname": "Lufy"
+               },
+               "account": {
+                   "email": "monke_D@mail.com",
+                   "role_id": 3
+               },
+               "schools": [
+                   1
+               ]
+           }
+       }
+         
+   */
 
   try {
     const { account, data, schools } = req.body;
@@ -54,7 +75,7 @@ async function store(req, res, next) {
     const _user = new User();
 
     await _user.create({ user: { ...account, password }, data, schools });
-
+    //#swagger.responses[201] = {message: 'User created successfully'}
     res.status(201).json({ message: 'User created successfully' });
 
   } catch (error) {
@@ -63,15 +84,14 @@ async function store(req, res, next) {
 
 }
 
-/**
- * @description get a user
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
+
 async function show(req, res, next) {
-  // #swagger.tags = ['Users']
-  // #swagger.parameters['path.id'] = { description: 'User ID' }
+  /* 
+    #swagger.summary = 'Get user by id'
+    #swagger.description = 'Endpoint to get a user by id'
+    #swagger.parameters['id'] = { description: 'User id' }
+  */
+
   try {
     const { id } = req.params;
     const user = new User();
@@ -94,10 +114,33 @@ async function show(req, res, next) {
  * @param {*} next
  */
 async function update(req, res, next) {
-  // #swagger.tags = ['Users']
-  // #swagger.parameters['path.id'] = { description: 'User ID' }
-  // #swagger.example = { "account": { "email": "", "role_id": 1, "password": "1234567" }, "data": { "f_name": "", "s_name" "f_lastname": "", "f_lastname": "" }, "schools": [1, 2] }
-
+  /*   #swagger.auto = false
+        #swagger.summary =  'Update a user'
+        #swagger.description =  'Endpoint to update a user with the role of admin, controller or recruiter, can update wathever field you send in the body of the request. If you send the password field it will be hashed, do not send a field if you do not want to update it'
+       #swagger.method = 'PUT'
+ 
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'User data.',
+           required: true,
+           schema:  {
+               "data": {
+                   "f_name": "",
+                   "s_name": "",
+                   "f_lastname": "",
+                   "s_lastname": ""
+               },
+               "account": {
+                   "email": "",
+                   "role_id": 1
+               },
+               "schools": [
+                   1
+               ]
+           }
+       }
+         
+   */
   try {
     const { id } = req.params;
     const auth = req.auth;
@@ -112,39 +155,42 @@ async function update(req, res, next) {
 
     account_schema.validate(account);
     data_schema.validate(data);
-    schools_schema.validate(schools); 
+    schools_schema.validate(schools);
 
     const _user = new User();
-    if(account?.password) {
+    if (account?.password) {
       account.password = await hash(account.password, 10);
     }
     await _user.update(id, { user: account, data, schools });
 
     res.status(200).json({ message: 'User updated successfully' });
-    
+
   } catch (error) {
     next(error);
   }
 
 }
-
 /**
- * @description delete a user
- * @param {*} req
- * @param {*} res
- * @param {*} next
+ * @description get the role id 
+ * @param {STRING} role
+ * @returns {NUMBER}
  */
-async function remove(req, res, next) {
-  // #swagger.tags = ['Users']
-  const { id } = req.params;
-  const auth = req.auth;
-  if (auth.id !== id && auth.role.id !== 1) {
-    throw { message: "You don't have permission to update this user", status: 403 }
+function getRolId(role) {
+  switch (role.toLowerCase()) {
+    case 'admin':
+      return 1;
+    case 'controller':
+      return 3;
+    case 'recruiter':
+      throw { message: 'You can not use this route for students', status: 400 }
+    case 'recruiter':
+      return 4;
+    default:
+      throw { message: 'Invalid role', status: 400 }
+
   }
-  const deleted = await removeUser(id);
-  res.json(`User with id ${req.params.id} deleted`);
+
 }
 
 
-
-export { index, store, show, update, remove };
+export { index, store, show, update };

@@ -26,16 +26,14 @@ function routes(app) {
     app_router.use("/auth", auth_router);
 
     app_router.use("/services", verifyToken, services_router);
-    app_router.use("/users", verifyToken, user_router);
+    app_router.use("/users", verifyToken, user_router   /* #swagger.tags = ['Users'] */);
     app_router.use("/roles", verifyToken, AccessValidation, roles_router);
     app_router.use("/categories", verifyToken, categories_router);
-    app_router.use("/students", verifyToken ,studen_router);
+    app_router.use("/students", verifyToken ,studen_router /* #swagger.tag =['Students'] */);
     app_router.use("/country", verifyToken, country_router);
-    app_router.use("/controllers", verifyToken, controller_router);
-    app_router.use("/recruiters", verifyToken, recruiter_router);
     app_router.use("/schools", verifyToken, school_router);
 
-    app_router.use("/docs", documentation_router);
+    app_router.use("/docs", documentation_router /* #swagger.ignore = true */);
 }
 
 export default routes;
