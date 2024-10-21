@@ -1,14 +1,14 @@
 import fs from 'fs';
-import key from '../../apikey.json' assert { type: "json" };
+import { CLIENT_EMAIL, PRIVATE_KEY } from '../config/app.config.js';
 import { google } from 'googleapis';
 
 
 const SCOPE = ['https://www.googleapis.com/auth/drive'];
 async function authorize() {
     const jwtClient = new google.auth.JWT(
-        key.client_email,
+        CLIENT_EMAIL,
         null,
-        key.private_key,
+        PRIVATE_KEY,
         SCOPE
     );
     await jwtClient.authorize();
