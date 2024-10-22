@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
-import { APP_URL } from '../config/app.config.js';
+import { APP_URL, NODE_ENV } from '../config/app.config.js';
 
-const scheme = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+const scheme = NODE_ENV === 'production' ? 'https' : 'http';
 
 const doc = {
   info: {
