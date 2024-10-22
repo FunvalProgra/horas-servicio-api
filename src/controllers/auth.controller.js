@@ -23,6 +23,7 @@ async function login(req, res, next) {
        
  */
   const { email, password } = req.body;
+  console.log(req.body)
   const authModel = new AuthModel();
   const user = await authModel.getUserByEmail(email);
 
