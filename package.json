@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/libs/swagger.js",
+    "dev": "node --watch src/index.js",
     "swagger": "node src/libs/swagger.js"
   },
   "keywords": [],
