@@ -23,13 +23,13 @@ function routes(app) {
 
     app_router.use("/auth", auth_router /* #swagger.tags = ['Auth'] #swagger.autoHeaders = false */);
 
-    app_router.use("/services", verifyToken, services_router /* #swagger.tags = ['Services'] */);
-    app_router.use("/users", verifyToken, user_router   /* #swagger.tags = ['Users'] */);
-    app_router.use("/roles", verifyToken, AccessValidation, roles_router /* #swagger.tags = ['Roles'] */);
-    app_router.use("/categories", verifyToken, categories_router /* #swagger.tags = ['Categories'] */);
-    app_router.use("/students", verifyToken, studen_router /* #swagger.tags = ['Students'] */);
-    app_router.use("/country", verifyToken, country_router /* #swagger.tags = ['Country'] */);
-    app_router.use("/schools", verifyToken, school_router /* #swagger.tags = ['Schools'] */);
+    app_router.use("/services", verifyToken, services_router /* #swagger.tags = ['Services'] #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }] */);
+    app_router.use("/users", verifyToken, user_router   /* #swagger.tags = ['Users'] #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }]*/);
+    app_router.use("/roles", verifyToken, AccessValidation, roles_router /* #swagger.tags = ['Roles']  #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }]*/);
+    app_router.use("/categories", verifyToken, categories_router /* #swagger.tags = ['Categories'] #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }] */);
+    app_router.use("/students", verifyToken, studen_router /* #swagger.tags = ['Students']  #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }]*/);
+    app_router.use("/country", verifyToken, country_router /* #swagger.tags = ['Country'] #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }]*/);
+    app_router.use("/schools", verifyToken, school_router /* #swagger.tags = ['Schools'] #swagger.autoHeaders = false #swagger.security = [{ "authorization": [] }]*/);
 
     app_router.use("/docs", documentation_router /* #swagger.ignore = true */);
 }

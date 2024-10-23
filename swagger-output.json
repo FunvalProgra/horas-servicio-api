@@ -79,24 +79,27 @@
         "description": "Endpoint to get all services, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services, if the status query is passed, it will return the services with the status passed, 0 for pending and 1 for approved, ",
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "status",
+            "name": "schema",
             "in": "query",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/servicesResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -105,11 +108,6 @@
         "summary": "Create a new service",
         "description": "Endpoint to create a new service",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -146,7 +144,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/services/{id}": {
@@ -162,21 +166,24 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/servicesResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -189,11 +196,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -232,7 +234,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/services/evidence/{fileId}": {
@@ -251,18 +259,18 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       }
     },
     "/services/{id}/review": {
@@ -277,11 +285,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -308,7 +311,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/users/": {
@@ -319,11 +328,6 @@
         "summary": "Get all users",
         "description": "Endpoint to get all users can be filtered by role with the query parameter r = (admin, controller, recruiter)",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "r",
             "in": "query",
@@ -337,7 +341,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -352,11 +361,6 @@
           "form-data"
         ],
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -420,7 +424,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/users/{id}": {
@@ -437,11 +447,6 @@
             "required": true,
             "type": "string",
             "description": "User id"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -451,7 +456,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -464,11 +474,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -530,7 +535,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/roles/": {
@@ -540,13 +551,6 @@
         ],
         "summary": "Get all roles",
         "description": "Endpoint to get all roles",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -557,7 +561,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       }
     },
     "/roles/{id}": {
@@ -573,11 +582,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -590,7 +594,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       }
     },
     "/categories/": {
@@ -600,13 +609,6 @@
         ],
         "summary": "Get all categories",
         "description": "Endpoint to get all service categories",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -614,7 +616,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -623,11 +630,6 @@
         "summary": "Create a new category",
         "description": "Endpoint to create a new category",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -652,7 +654,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/categories/{id}": {
@@ -668,11 +676,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -685,7 +688,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -698,11 +706,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -729,7 +732,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/students/": {
@@ -739,13 +748,6 @@
         ],
         "summary": "Get all students",
         "description": "Endpoint to get all students",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -753,7 +755,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -762,11 +769,6 @@
         "summary": "Create a new student",
         "description": "Endpoint to create a new student",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -838,7 +840,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/students/{id}": {
@@ -855,11 +863,6 @@
             "required": true,
             "type": "integer",
             "description": "Student id"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -869,7 +872,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -882,11 +890,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -960,7 +963,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/country/": {
@@ -970,13 +979,6 @@
         ],
         "summary": "Get all countries",
         "description": "get all countries",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -984,7 +986,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -993,11 +1000,6 @@
         "summary": "Create a new country",
         "description": "Endpoint to create a new country",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -1021,7 +1023,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/country/{id}": {
@@ -1037,11 +1045,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -1051,7 +1054,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -1064,11 +1072,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -1094,7 +1097,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/schools/": {
@@ -1104,13 +1113,6 @@
         ],
         "summary": "Get all schools",
         "description": "Endpoint to get all schools",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1118,7 +1120,12 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1127,11 +1134,6 @@
         "summary": "Create a new school",
         "description": "Endpoint to create a new school",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -1155,7 +1157,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     },
     "/schools/{id}": {
@@ -1171,11 +1179,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -1188,7 +1191,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -1201,11 +1209,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -1231,7 +1234,13 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "autoHeaders": false
       }
     }
   },
@@ -1301,6 +1310,111 @@
               "type": "string",
               "description": "Role name",
               "example": "Admin"
+            }
+          }
+        }
+      }
+    },
+    "servicesResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "Service id",
+          "example": 1
+        },
+        "amount_reported": {
+          "type": "string",
+          "description": "Amount reported",
+          "example": "3"
+        },
+        "amount_approved": {
+          "type": "string",
+          "description": "Amount approved",
+          "example": "2"
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Evidence",
+          "example": "1xvvLig6bmgGWvZhReKMCAf_wElJKTjrb"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description",
+          "example": "Viaje al tiempo, dos dias"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Comment",
+          "example": null
+        },
+        "status": {
+          "type": "number",
+          "description": "Status",
+          "example": 1
+        },
+        "user_id": {
+          "type": "number",
+          "description": "User id",
+          "example": 11
+        },
+        "reviewer_id": {
+          "type": "number",
+          "description": "Reviewer id",
+          "example": 11
+        },
+        "category_id": {
+          "type": "number",
+          "description": "Category id",
+          "example": 1
+        },
+        "level": {
+          "type": "number",
+          "description": "Level",
+          "example": 1
+        },
+        "create_at": {
+          "type": "string",
+          "description": "Created at",
+          "example": "2024-10-18T16:51:40.000Z"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "Updated at",
+          "example": "2024-10-18T16:51:40.000Z"
+        },
+        "student": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Student id",
+              "example": 11
+            },
+            "email": {
+              "type": "string",
+              "description": "Student email",
+              "example": "example@mail.com"
+            },
+            "registration_code": {
+              "type": "string",
+              "description": "Student registration code",
+              "example": "jrfctk0145e"
+            },
+            "name": {
+              "type": "string",
+              "description": "Student name",
+              "example": "Jorge Luis Sosa Nuñez"
+            },
+            "controller": {
+              "type": "string",
+              "description": "Controller",
+              "example": "Garp  D. Monkey"
+            },
+            "recruiter": {
+              "type": "string",
+              "description": "Recruiter",
+              "example": "Monkey  D. Lufy"
             }
           }
         }

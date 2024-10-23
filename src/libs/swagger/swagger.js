@@ -1,5 +1,6 @@
 import swaggerAutogen from 'swagger-autogen';
 import { loginRequest, profileResponse } from './login.schema.js'
+import { servicesResponse } from './services.schema.js';
 import { APP_URL, NODE_ENV } from '../../config/app.config.js';
 
 const scheme = NODE_ENV === 'production' ? 'https' : 'http';
@@ -22,13 +23,12 @@ const doc = {
   },
   components: {
     loginRequest,
-    profileResponse
+    profileResponse,
+    servicesResponse
   }
 };
 
 const outputFile = '../../../swagger-output.json';
 const routes = ['../../routes/index.js'];
 
-swaggerAutogen()(outputFile, routes, doc).then(async () => {
-  await import('../../index.js')
-})
+swaggerAutogen()(outputFile, routes, doc)

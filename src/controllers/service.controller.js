@@ -12,9 +12,15 @@ import { downloadFile, uploadFile, deleteFile } from "../libs/google.drive.js";
  * @param {*} next
  */
 async function index(req, res, next) {
-  console.log("here");
-  // #swagger.summary = 'Get all services'
-  // #swagger.description = 'Endpoint to get all services, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services, if the status query is passed, it will return the services with the status passed, 0 for pending and 1 for approved, '
+  /* 
+    #swagger.summary = 'Get all services'
+    #swagger.description = 'Endpoint to get all services, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services, if the status query is passed, it will return the services with the status passed, 0 for pending and 1 for approved, '
+    #swagger.method = 'Get'
+    #swagger.responses[200] = {
+      schema: { $ref: "#/components/servicesResponse" }
+    }
+
+  */
   try {
     const { id, role } = req.auth;
     const { status } = req.query;
@@ -104,13 +110,19 @@ async function create(req, res, next) {
  * @param {*} next
  */
 async function show(req, res, next) {
-  // #swagger.summary = 'Get a service'
-  // #swagger.description = 'Endpoint to get a service by id, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services'
+  /*
+    #swagger.summary = 'Get a service'
+    #swagger.description = 'Endpoint to get a service by id, if the user is a student, it will return only the services of the user, if the user is an admin, it will return all the services'
+    #swagger.method = 'Get' 
+    #swagger.responses[200] = {
+      schema: { $ref: "#/components/servicesResponse" }
+    }
+  */
   try {
     const { id } = req.params;
     const { id: authId, role } = req.auth;
 
-    
+
     if (authId != id && role.name !== "Admin") {
       throw { status: 401, message: 'Unauthorized' }
     }
@@ -241,7 +253,7 @@ async function review(req, res, next) {
 
     const service_res = await service.update(id, values);
 
- 
+
     res.status(200).json(`Service with id ${id} updated successfully`);
 
   } catch (error) {
