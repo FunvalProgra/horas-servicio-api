@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "swagger": "node src/libs/swagger.js"
+    "swagger": "node --watch src/libs/swagger/swagger.js"
   },
   "keywords": [],
   "author": "joregesosa@gmail.com",

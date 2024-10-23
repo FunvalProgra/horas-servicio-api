@@ -2,7 +2,6 @@ import { AuthModel } from "../models/auth.model.js";
 import { SECRRET_KEY } from "../config/app.config.js";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
-import { auth } from "googleapis/build/src/apis/abusiveexperiencereport/index.js";
 
 
 async function login(req, res, next) {
@@ -11,19 +10,14 @@ async function login(req, res, next) {
       #swagger.description = 'Endpoint to login into the system'
      #swagger.method = 'Post'
  
-     #swagger.parameters['body'] = {
-         in: 'body',
-         description: 'School Data',
-         required: true,
-         schema:  {
-              email: 'user email',
-              password: 'user password'
-         }
-     }
-       
+      #swagger.parameters['obj'] = {
+        in: 'body',
+        description: 'User information',
+        required: true,
+        schema: { $ref: "#/components/loginRequest" }
+      }
  */
   const { email, password } = req.body;
-  console.log(req.body)
   const authModel = new AuthModel();
   const user = await authModel.getUserByEmail(email);
 
@@ -49,8 +43,8 @@ async function login(req, res, next) {
     });
 
     const profile = await authModel.getUserById(user.id);
-   
-    res.status(200).json({   ...profile, token });
+
+    res.status(200).json({ ...profile, token });
 
   } catch (error) {
     next(error);
@@ -59,6 +53,17 @@ async function login(req, res, next) {
 }
 
 async function profile(req, res, next) {
+  /*  
+      #swagger.summary = 'Login into the system'
+      #swagger.description = 'Endpoint to login into the system'
+      #swagger.method = 'get'
+      #swagger.security = [{ "authorization": [] }]
+      #swagger.responses[200] = {
+        schema: { $ref: "#/components/profileResponse" }
+      }
+ */
+
+
   try {
     const { id } = req.auth;
     const authModel = new AuthModel();

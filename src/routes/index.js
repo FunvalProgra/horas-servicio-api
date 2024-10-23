@@ -21,7 +21,7 @@ const app_router = Router();
 function routes(app) {
     app.use("/api/v1", app_router);
 
-    app_router.use("/auth", auth_router);
+    app_router.use("/auth", auth_router /* #swagger.tags = ['Auth'] #swagger.autoHeaders = false */);
 
     app_router.use("/services", verifyToken, services_router /* #swagger.tags = ['Services'] */);
     app_router.use("/users", verifyToken, user_router   /* #swagger.tags = ['Users'] */);

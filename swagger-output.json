@@ -1,38 +1,39 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
+    "version": "1.0.0",
     "title": "Horas de Servicio API",
-    "description": "Demo API para curso de React y Node.js",
-    "version": "1.0.0"
+    "description": "Demo API para curso de React y Node.js"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000/api/v1/"
-    }
+  "host": "localhost:3000/api/v1",
+  "basePath": "/",
+  "schemes": [
+    "http"
   ],
+  "securityDefinitions": {
+    "authorization": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Authentication token"
+    }
+  },
   "paths": {
     "/auth/login": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "summary": "Login into the system",
         "description": "Endpoint to login into the system",
         "parameters": [
           {
-            "name": "body",
+            "name": "obj",
             "in": "body",
-            "description": "School Data",
+            "description": "User information",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "user email"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "user password"
-                }
-              }
+              "$ref": "#/components/loginRequest"
             }
           }
         ],
@@ -40,29 +41,33 @@
           "default": {
             "description": ""
           }
-        }
+        },
+        "autoHeaders": false
       }
     },
     "/auth/profile": {
       "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
+        "tags": [
+          "Auth"
         ],
+        "summary": "Login into the system",
+        "description": "Endpoint to login into the system",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/profileResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
       }
     },
     "/services/": {
@@ -76,16 +81,12 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "status",
             "in": "query",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -107,9 +108,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -162,16 +161,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -194,16 +189,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -251,21 +242,20 @@
         ],
         "summary": "Download service evidence o render in browser",
         "description": "Endpoint to download the evidence of a service, if the opt query is passed with the value download, it will download the file, if not, it will render in the browser\r  try {\r  const { opt } = req.query;\r \r  const { fileId } = req.params;\r  if (!fileId) {\r  throw { status: 400, message: ",
+        "produces": [
+          "application/pdf"
+        ],
         "parameters": [
           {
             "name": "fileId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -287,16 +277,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -336,16 +322,12 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "r",
             "in": "query",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -363,13 +345,17 @@
         ],
         "summary": "Create a new user",
         "description": "Endpoint to create a new user with the role of admin, controller or recruiter",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "form-data"
+        ],
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -449,17 +435,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
+            "type": "string",
             "description": "User id"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -482,16 +464,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -566,9 +544,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -596,16 +572,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -632,9 +604,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -656,9 +626,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -699,16 +667,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -734,16 +698,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -783,9 +743,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -807,9 +765,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -897,17 +853,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
+            "type": "integer",
             "description": "Student id"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -930,16 +882,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -1026,9 +974,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -1050,9 +996,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -1092,16 +1036,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -1124,16 +1064,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -1172,9 +1108,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -1196,9 +1130,7 @@
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -1238,16 +1170,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -1273,16 +1201,12 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "authorization",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "body",
@@ -1306,6 +1230,78 @@
         "responses": {
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "loginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User email",
+          "example": "exaple@mail.com"
+        },
+        "password": {
+          "type": "string",
+          "description": "User password",
+          "example": "123456"
+        }
+      }
+    },
+    "profileResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User id",
+          "example": "4"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email",
+          "example": "example@mail.com"
+        },
+        "f_name": {
+          "type": "string",
+          "description": "User first name",
+          "example": "Jorge"
+        },
+        "s_name": {
+          "type": "string",
+          "description": "User second name",
+          "example": "Luis"
+        },
+        "f_lastname": {
+          "type": "string",
+          "description": "User first last name",
+          "example": "Sosa"
+        },
+        "s_lastname": {
+          "type": "string",
+          "description": "User second last name",
+          "example": "Nuñez"
+        },
+        "full_name": {
+          "type": "string",
+          "description": "User full name",
+          "example": "Jorge Luis Sosa Nuñez"
+        },
+        "role": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Role id",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "description": "Role name",
+              "example": "Admin"
+            }
           }
         }
       }
