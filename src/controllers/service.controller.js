@@ -29,7 +29,7 @@ async function index(req, res, next) {
     }
 
     const service = new Service();
-    let services_res = role.name === 'student' ? await service.getServicesByUserId(id) : await service.all(status);
+    let services_res = role.name === 'Student' ? await service.getServicesByUserId(id) : await service.all(status);
     res.status(200).json(services_res);
 
   } catch (error) {
@@ -74,8 +74,8 @@ async function create(req, res, next) {
 
     const { id: user_id, role } = req.auth;
 
-    if (role.name === "Admin") {
-      throw { status: 401, message: 'Admins are not allowed to report services.' }
+    if (role.name !== "Student") {
+      throw { status: 401, message: `${role.name}s are not allowed to report services.` }
     }
 
     const service_schema = joi.object({
