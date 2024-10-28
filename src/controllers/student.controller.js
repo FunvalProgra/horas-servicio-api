@@ -56,9 +56,7 @@ export async function create(req, res, next) {
                    "student": {
                        "controller_id": 1,
                        "recruiter_id": 1,
-                      "country_id": 1,
-                      level_id: 1,
-                       
+                       "country_id": 1,
                   }    
               }
           }

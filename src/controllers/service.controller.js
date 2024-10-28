@@ -72,8 +72,11 @@ async function create(req, res, next) {
     }
     evidence = await uploadFile('application/pdf', req.file.originalname, req.file.path);
 
+    const { id: user_id, role } = req.auth;
 
-    const { id: user_id } = req.auth;
+    if (role.name === "Admin") {
+      throw { status: 401, message: 'Admins are not allowed to report services.' }
+    }
 
     const service_schema = joi.object({
       amount_reported: joi.number().required(),
