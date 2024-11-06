@@ -9,7 +9,7 @@ export class Student extends Model {
     async all() {
         try {
             const query = `SELECT 
-                    u.id, u.email, u.registration_code, st.level,
+                    u.id, u.email, u.registration_code,
                     concat(d.f_name, ' ', d.s_name, ' ', d.f_lastname, ' ', d.s_lastname) as name,
                     json_build_object(
                         'id', re.id, 
@@ -77,7 +77,7 @@ export class Student extends Model {
     async find(id) {
         try {
             const query = `SELECT 
-                    u.id, u.email, st.level, u.registration_code, 
+                    u.id, u.email, u.registration_code, 
                     concat(d.f_name, ' ', d.s_name, ' ', d.f_lastname, ' ', d.s_lastname) as name,
                     json_build_object(
                         'id', re.id, 
