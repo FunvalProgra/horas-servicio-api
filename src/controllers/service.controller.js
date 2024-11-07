@@ -29,7 +29,7 @@ async function index(req, res, next) {
     }
 
     const service = new Service();
-    let services_res = role.name === 'Student' ? await service.getServicesByUserId(id) : await service.all(status);
+    let services_res = role.name === 'Student' ? await service.userServices(id) : await service.all(status);
     res.status(200).json(services_res);
 
   } catch (error) {
